@@ -9,7 +9,7 @@ import BackgroundImage from "../../assets/img/bg4.jpg"
 import LoginForm from "./submitForm/LoginForm";
 
 const LoginPage = () => {
-  
+
   return (
     <Box
       sx={{
@@ -18,7 +18,8 @@ const LoginPage = () => {
         backgroundSize: "cover",
         minHeight: '100vh',
         width: '100%'
-      }}>
+      }}
+    >
       <Grid
         container
         spacing={0}

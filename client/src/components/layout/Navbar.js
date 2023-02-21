@@ -50,7 +50,8 @@ const pagesList = [
     page: { title: 'My Bookings', href: '' },
     subpages: [
       { title: 'View All Bookings', href: '/bookings' },
-      { title: 'Edit Notifications', href: '/bookings/edit-notifications' }
+      { title: 'Edit Notifications', href: '/bookings/edit-notifications' },
+      { title: 'Create Booking', href: '/bookings/new-booking' }
     ]
   },
   {
@@ -339,8 +340,8 @@ function Navbar() {
                       R
                     </Avatar>
                   }
-                  title={user.fullName}
-                  subheader={user.email}
+                  title={user?.fullName}
+                  subheader={user?.email}
                   sx={{ padding: 0, color: '#212121' }}
                 />
               </MenuItem>

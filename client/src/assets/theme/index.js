@@ -32,7 +32,7 @@ export const getDesignTokens = (mode) => ({
 
           divider: grey[300],
           text: {
-            primary: grey[900],
+            primary: grey[500],
             secondary: grey[800],
           },
         }

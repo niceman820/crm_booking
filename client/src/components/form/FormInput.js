@@ -40,7 +40,7 @@ const FormInput = ({ name, handleChange, ...otherProps }) => {
           {...field}
           {...otherProps}
           variant='outlined'
-          sx={{ mt: '1.5rem' }}
+          // sx={{ mt: '1.5rem' }}
           error={!!errors[name]}
           helperText={
             errors[name] ? (errors[name].message) : ''

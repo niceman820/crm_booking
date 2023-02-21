@@ -65,6 +65,7 @@ function LoginForm() {
             type='email'
             name='email'
             required
+            sx={{ mb: 2 }}
           />
           <FormInput
             type='password'

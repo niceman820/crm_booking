@@ -99,6 +99,7 @@ function SignupForm() {
                 name='firstName'
                 fullWidth
                 required
+                sx={{ mb: 2 }}
               />
             </Grid>
             <Grid
@@ -112,6 +113,7 @@ function SignupForm() {
                 name='lastName'
                 fullWidth
                 required
+                sx={{ mb: 2 }}
               />
             </Grid>
           </Grid>
@@ -120,6 +122,7 @@ function SignupForm() {
             type='email'
             name='email'
             required
+            sx={{ mb: 2 }}
           />
           <FormInput
             type={showPassword ? "text" : "password"}
@@ -139,11 +142,12 @@ function SignupForm() {
                 </InputAdornment>
               )
             }}
+            sx={{ mb: 2 }}
           />
           <PasswordStrengthBar
             password={watchPassword}
             shortScoreWord='Use 8+ characters with a mix of letters, numbers & symbols.'
-            style={{ marginTop: '5px' }}
+            style={{ marginTop: '5px', marginBottom: '8px' }}
           />
           <FormInput
             type='password'

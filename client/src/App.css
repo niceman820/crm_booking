@@ -70,3 +70,48 @@ a {
     background-size: 100% 200px;
   }
 }
+
+/* ID Card Part */
+.IDCard-warpper {
+  position: relative;
+  display: inline-block;
+}
+.IDCard-upload {
+  position: absolute;
+  display: flex;
+  top: -8px;
+  right: -15px;
+  width: 26px;
+  height: 26px;
+  background-color: white;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10;
+}
+.IDCard-upload i {
+  font-size: 14px;
+  color: grey;
+  z-index: 1;
+}
+.IDCard-remove {
+  position: absolute;
+  display: flex;
+  bottom: -8px;
+  right: -15px;
+  width: 26px;
+  height: 26px;
+  background-color: white;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10;
+}
+.IDCard-remove i {
+  font-size: 14px;
+  color: grey;
+  z-index: 1;
+}
+/* End ID Card Part */

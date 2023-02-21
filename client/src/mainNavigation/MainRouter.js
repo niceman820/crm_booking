@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import LoginPage from '../pages/auth/LoginPage';
 import SignupPage from '../pages/auth/SignupPage';
 import MainLayoutRouter from './MainLayoutRouter';
+import CreateBookingPage from '../pages/booking/CreateBookingPage';
 
 const MainRouter = () => {
   const { isAuthenticated } = useSelector(state => ({
@@ -13,6 +14,8 @@ const MainRouter = () => {
     <Routes>
       <Route path='login' element={isAuthenticated ? <Navigate to="/" /> : <LoginPage />} />
       <Route path='signup' element={isAuthenticated ? <Navigate to="/" /> : <SignupPage />} />
+      <Route path='bookings/new-booking' element={<CreateBookingPage />} />
+      
       <Route path='*' element={isAuthenticated ? <MainLayoutRouter /> : <LoginPage /> } />
     </Routes>
   );
