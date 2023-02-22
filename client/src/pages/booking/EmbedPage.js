@@ -8,10 +8,12 @@ import {
   Tooltip,
   Button
 } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 
 const EmbedPage = () => {
-  const [valueLink, setValueLink] = useState('');
-  const [valueBtnCode, setValueBtnCode] = useState('');
+  const theme = useTheme();
+  const [valueLink, setValueLink] = useState("<a href='https://test.com/'>Launch My Booking Form</a>");
+  const [valueBtnCode, setValueBtnCode] = useState("<div id = 'mf_placeholder'\n\tdata-formurl='forms/embed.php?id=19108'\n\tdata-formheight='1746'\n\tdata-formtitle='Sample Booking Form'\n</div>\n<script>\n(function(f,o,r,m){\n\tr = f.createElement('script');r.async=1;r.src=o+'js/mf.js';\n\tm=f.getElementById('mf_placeholder'); m.parentNode.insertBefore(r, m);\n})(document,'/forms/');\n</script>\n");
   const [openLinkCopyTooltip, setOpenLinkCopyTooltip] = useState(false);
   const [openBtnCodeTooltip, setOpenBtnCodeTooltip] = useState(false);
   const [errorLink, setErrorLink] = useState(false);
@@ -50,7 +52,7 @@ const EmbedPage = () => {
         <Typography sx={{ color: '#fff', fontSize: '1.5rem', fontWeight: 600 }}>Embed Booking Form</Typography>
         <Typography sx={{ color: '#fff', fontSize: '0.8rem', fontWeight: 600, mt: 1, opacity: 0.7 }} >Embed your personalized booking form in wherever you need it, on your website, advertising profile, or social media.</Typography>
       </Grid>
-      <Grid container justifyContent='center' sx={{ mt: { sm: 3, md: 6 }, width: '100%', backgroundColor: '#fff', borderRadius: 2 }} >
+      <Grid container justifyContent='center' sx={{ mt: { sm: 3, md: 6 }, width: '100%', backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d', borderRadius: 2 }} >
         <Container sx={{ width: '95%', py: 8 }}>
           <Grid>
             <Typography sx={{ fontWeight: 600, fontSize: '1.2rem' }}>1. Embed as a Simple Link</Typography>
@@ -58,12 +60,23 @@ const EmbedPage = () => {
           </Grid>
           <Grid sx={{ mt: 5 }}>
             <Typography sx={{ fontWeight: 600, }}>Your Embed Code</Typography>
-            <Stack direction='row' sx={{ mt: 1 }} >
+            <Stack direction='row' sx={{ mt: 1, alignItems: 'center' }} >
               <TextField
+                variant="standard"
                 fullWidth
+                value={valueLink}
                 onChange={(e) => { setErrorLink(false); setErrorMessage(''); setValueLink(e.target.value); }}
                 error={errorLink}
                 helperText={errorMessage}
+                InputProps={{
+                  disableUnderline: true,
+                  style: {
+                    padding: '8px 20px',
+                    borderRadius: '6px',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                  },
+                }}
               />
               <Tooltip
                 open={openLinkCopyTooltip}
@@ -81,9 +94,12 @@ const EmbedPage = () => {
                     fontWeight: 600,
                     minWidth: '7rem',
                     letterSpacing: 0.5,
-                    mt: 1.5,
                     ml: 2,
-                    backgroundColor: '#f5f8fa'
+                    backgroundColor: theme.palette.mode === 'light' ? '#f5f8fa' : '#2B2B40',
+                    color: theme.palette.mode === 'dark' && '#6D6D80',
+                    '&:hover': {
+                      color: theme.palette.mode === 'dark' && '#009EF7',
+                    }
                   }}
                 >
                   Copy Code
@@ -93,7 +109,7 @@ const EmbedPage = () => {
           </Grid>
         </Container>
       </Grid>
-      <Grid container justifyContent='center' sx={{ mt: 3, width: '100%', backgroundColor: '#fff', borderRadius: 2 }} >
+      <Grid container justifyContent='center' sx={{ mt: 3, width: '100%', backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d', borderRadius: 2 }} >
         <Container sx={{ width: '95%', py: 8 }}>
           <Grid>
             <Typography sx={{ fontWeight: 600, fontSize: '1.2rem' }}>2. Embed as a Button</Typography>
@@ -102,13 +118,24 @@ const EmbedPage = () => {
           <Grid sx={{ mt: 5 }}>
             <Typography sx={{ fontWeight: 600, }}>Your Embed Code</Typography>
             <TextField
+              variant="standard"
               fullWidth
+              value={valueBtnCode}
               onChange={(e) => { setErrorButton(false); setErrorBtnMessage(''); setValueBtnCode(e.target.value); }}
               error={errorButton}
               helperText={errorBtnMessage}
               sx={{ mt: 1 }}
               multiline
-              rows={5}
+              rows={8}
+              InputProps={{
+                disableUnderline: true,
+                style: {
+                  padding: '8px 20px',
+                  borderRadius: '6px',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                },
+              }}
             />
             <Tooltip
               open={openBtnCodeTooltip}
@@ -126,8 +153,12 @@ const EmbedPage = () => {
                   fontWeight: 600,
                   minWidth: '7rem',
                   letterSpacing: 0.5,
-                  mt: 1,
-                  backgroundColor: '#f5f8fa'
+                  mt: 2,
+                  backgroundColor: theme.palette.mode === 'light' ? '#f5f8fa' : '#2B2B40',
+                  color: theme.palette.mode === 'dark' && '#6D6D80',
+                  '&:hover': {
+                    color: theme.palette.mode === 'dark' && '#009EF7',
+                  }
                 }}
               >
                 Copy Code

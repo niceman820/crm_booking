@@ -20,7 +20,7 @@ const MainLayoutRouter = () => {
       className="page-content"
       sx={{
         backgroundImage: theme.palette.mode === 'light' ? `url(${HeaderBgImage})` : `url(${DarkBgImage})`,
-        backgroundColor: '#f5f8fa'
+        backgroundColor: theme.palette.mode === 'light' ? '#f5f8fa' : '#151521'
       }}
     >
       <Navbar />

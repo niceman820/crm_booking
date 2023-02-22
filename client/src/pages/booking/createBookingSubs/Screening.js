@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTheme } from '@mui/material/styles';
 import {
   Grid,
   Typography,
@@ -44,6 +45,7 @@ const screenSchema = object({
 })
 
 const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
+  const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [valueScreenMethod, setValueScreenMethod] = useState('first');
@@ -113,7 +115,7 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      sx={{ flexGrow: 2, flexDirection: 'column', paddingY: '5rem' }}
+      sx={{ flexGrow: 2, flexDirection: 'column', paddingY: '5rem', backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d' }}
     >
       <Container sx={{ maxWidth: { md: '650px' } }}>
         <Grid>
@@ -185,9 +187,10 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
                 <Table aria-label="simple table">
                   <TableBody>
                     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
-                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, color: '#3F4254', verticalAlign: 'top' }} >References #1 <span style={{ color: 'red' }}>*</span></TableCell>
+                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, color: theme.palette.mode === 'light' && '#3F4254', verticalAlign: 'top' }} >References #1 <span style={{ color: 'red' }}>*</span></TableCell>
                       <TableCell align="left" sx={{ paddingX: 0 }} >
                         <TextField
+                          variant="standard"
                           type='text'
                           fullWidth
                           multiline
@@ -198,13 +201,23 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
                             errors['ref1'] ? (errors['ref1'].message) : ''
                           }
                           {...register('ref1')}
+                          InputProps={{
+                            disableUnderline: true,
+                            style: {
+                              padding: '10px 20px',
+                              borderRadius: '6px',
+                              fontSize: '0.8rem',
+                              fontWeight: 600,
+                            },
+                          }}
                         />
                       </TableCell>
                     </TableRow>
                     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
-                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, color: '#3F4254', verticalAlign: 'top' }} >References #2 <span style={{ color: 'red' }}>*</span></TableCell>
+                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, color: theme.palette.mode === 'light' && '#3F4254', verticalAlign: 'top' }} >References #2 <span style={{ color: 'red' }}>*</span></TableCell>
                       <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 }} >
                         <TextField
+                          variant="standard"
                           type='text'
                           fullWidth
                           multiline
@@ -215,11 +228,20 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
                             errors['ref2'] ? (errors['ref2'].message) : ''
                           }
                           {...register('ref2')}
+                          InputProps={{
+                            disableUnderline: true,
+                            style: {
+                              padding: '10px 20px',
+                              borderRadius: '6px',
+                              fontSize: '0.8rem',
+                              fontWeight: 600,
+                            },
+                          }}
                         />
                       </TableCell>
                     </TableRow>
                     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
-                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, verticalAlign: 'top', color: '#3F4254' }} >ID Upload <span style={{ color: 'red' }}>*</span></TableCell>
+                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, verticalAlign: 'top', color: theme.palette.mode === 'light' && '#3F4254' }} >ID Upload <span style={{ color: 'red' }}>*</span></TableCell>
                       <TableCell align="left" sx={{ paddingX: 0 }} >
                         <div className="IDCard-warpper">
                           <img src={selectedFile ?? idIcon} style={{ width: '200px' }} />
@@ -291,7 +313,7 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
               Sorry, looks like there are some errors detected, please try again.
             </Typography>
             <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
-              <Button variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', backgroundColor: '#f5f8fa', boxShadow: 'none' }} onClick={handleClose}>Ok, got it!</Button>
+              <Button variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', backgroundColor: theme.palette.mode === 'light' && '#f5f8fa', boxShadow: 'none' }} onClick={handleClose}>Ok, got it!</Button>
             </Grid>
           </Grid>
         </Box>

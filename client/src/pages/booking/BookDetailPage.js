@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import ScrollToTop from "react-scroll-to-top";
-
+import { useTheme } from '@mui/material/styles';
 import {
   Avatar,
   Button,
@@ -21,7 +21,8 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import idSample from '../../assets/img/sample-id.jpg';
 
 const BookDetailPage = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const theme = useTheme();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { user } = useSelector(state => ({
@@ -63,7 +64,7 @@ const BookDetailPage = () => {
           alignItems='center'
           sx={{
             minHeight: '300px',
-            backgroundColor: '#fff',
+            backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d',
             borderRadius: 2,
           }}
         >
@@ -89,7 +90,7 @@ const BookDetailPage = () => {
           xs={24}
           sx={{
             minHeight: '300px',
-            backgroundColor: '#fff',
+            backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d',
             borderRadius: 2
           }}
         >

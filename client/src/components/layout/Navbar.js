@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useTheme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { ColorModeContext } from '../../assets/theme/color-context';
 import {
@@ -71,6 +72,7 @@ const subscriptionPages = [
 ];
 
 function Navbar() {
+  const theme = useTheme();
   const colorMode = useContext(ColorModeContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -240,7 +242,7 @@ function Navbar() {
                 {subpageItems.map((subpage) => (
                   <MenuItem key={subpage.title} onClick={handleCloseDropdownMenu} sx={{ py: 1.5 }}>
                     <Link to={subpage.href}>
-                      <Typography textAlign="center" sx={{ color: 'black', fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 }}>
+                      <Typography textAlign="center" sx={{ color: theme.palette.mode === 'light' && 'black', fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 }}>
                         {subpage.title}
                       </Typography>
                     </Link>
@@ -289,19 +291,19 @@ function Navbar() {
                 <ListItemIcon sx={{ minWidth: '0!important' }}>
                   <WbSunnyIcon fontSize="small" />
                 </ListItemIcon>
-                <Typography textAlign="center" sx={{ color: 'black', fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2 }}>Light</Typography>
+                <Typography textAlign="center" sx={{ color: theme.palette.mode === 'light' && 'black', fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2 }}>Light</Typography>
               </MenuItem>
               <MenuItem sx={{ py: 1.5 }} onClick={colorMode.setDarkMode}>
                 <ListItemIcon sx={{ minWidth: '0!important' }}>
                   <DarkModeIcon fontSize="small" />
                 </ListItemIcon>
-                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2, color: 'black' }}>Dark</Typography>
+                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2, color: theme.palette.mode === 'light' && 'black' }}>Dark</Typography>
               </MenuItem>
               <MenuItem sx={{ py: 1.5 }} onClick={colorMode.setLightMode}>
                 <ListItemIcon sx={{ minWidth: '0!important' }}>
                   <MonitorIcon fontSize="small" />
                 </ListItemIcon>
-                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2, color: 'black' }}>System</Typography>
+                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2, color: theme.palette.mode === 'light' && 'black' }}>System</Typography>
               </MenuItem>
             </Menu>
 
@@ -342,28 +344,28 @@ function Navbar() {
                   }
                   title={user?.fullName}
                   subheader={user?.email}
-                  sx={{ padding: 0, color: '#212121' }}
+                  sx={{ padding: 0, color: '#212121', backgroundColor: theme.palette.mode === 'dark' && '#1e1e2d' }}
                 />
               </MenuItem>
               <Divider />
               <MenuItem onClick={handleCloseUserMenu} sx={{ py: 1.5, marginInlineStart: 1 }}>
-                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: 'black' }}>My Profile</Typography>
+                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: theme.palette.mode === 'light' && 'black' }}>My Profile</Typography>
               </MenuItem>
               <MenuItem onClick={handleCloseUserMenu} sx={{ py: 1.5, marginInlineStart: 1 }}>
-                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: 'black' }}>Edit Profile</Typography>
+                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: theme.palette.mode === 'light' && 'black' }}>Edit Profile</Typography>
               </MenuItem>
               <MenuItem sx={{ py: 1.5, marginInlineStart: 1 }} onMouseOver={handleOpenSubscriptionMenu} >
-                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: 'black' }}>My Subscription</Typography>
+                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: theme.palette.mode === 'light' && 'black' }}>My Subscription</Typography>
                 <ListItemIcon sx={{ minWidth: '0!important', marginInlineStart: 'auto' }}>
                   <NavigateNextIcon />
                 </ListItemIcon>
               </MenuItem>
               <Divider />
               <MenuItem onClick={handleCloseUserMenu} sx={{ py: 1.5, marginInlineStart: 1 }}>
-                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: 'black' }}>Account Setting</Typography>
+                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: theme.palette.mode === 'light' && 'black' }}>Account Setting</Typography>
               </MenuItem>
               <MenuItem onClick={handleLogout} sx={{ marginInlineStart: 1 }}>
-                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: 'black' }}>Sign Out</Typography>
+                <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: theme.palette.mode === 'light' && 'black' }}>Sign Out</Typography>
               </MenuItem>
             </Menu>
             {/* User subscription sub Dropdown menu */}
@@ -389,7 +391,7 @@ function Navbar() {
             >
               {subscriptionPages.map((page) => (
                 <MenuItem key={page.title} sx={{ py: 1.5, marginInlineStart: 1 }}>
-                  <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: 'black' }}>{page.title}</Typography>
+                  <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: theme.palette.mode === 'light' && 'black' }}>{page.title}</Typography>
                   {page.title === 'Statements' && <ListItemIcon sx={{ minWidth: '0!important', marginInlineStart: 'auto' }}>
                     <ErrorIcon fontSize="small" />
                   </ListItemIcon>}
@@ -406,7 +408,7 @@ function Navbar() {
                       fontSize: '0.8rem',
                       fontWeight: 600,
                       opacity: 0.6,
-                      color: 'black'
+                      color: theme.palette.mode === 'light' && 'black'
                     }
                   }}
                 />

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { useTheme } from '@mui/material/styles';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Grid, Typography, Box, Button, InputAdornment, IconButton } from "@mui/material";
+import { Grid, Typography, Box, Button, InputAdornment, IconButton, TextField } from "@mui/material";
 import FormInput from "../../../components/form/FormInput";
 import { object, string } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +10,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { useDispatch } from "react-redux";
-import { register } from "../../../redux/actions/auth";
+import { signup } from "../../../redux/actions/auth";
 
 const signupSchema = object({
   firstName: string().min(1, 'First Name is required').max(30, 'First Name must be less than 30 letters'),
@@ -27,6 +28,7 @@ const signupSchema = object({
 
 
 function SignupForm() {
+  const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -43,13 +45,13 @@ function SignupForm() {
     defaultValues,
   });
 
+  const { register, formState: { errors } } = methods;
+
   // ? Submit Handler
   const onSubmitHandler = (data) => {
     console.log("---------", data);
-    dispatch(register(data));
-    // .then(() => {
-      navigate('/bookings');
-    // })
+    dispatch(signup(data));
+    navigate('/bookings');
   };
 
   const handleClickShowPassword = () => {
@@ -60,14 +62,14 @@ function SignupForm() {
     setShowPassword(!showPassword)
   }
   const watchPassword = methods.watch("password", "");
-  
+
   return (
     <Grid
       justifyContent='center'
       sx={{
         width: { sm: '550px' },
         minHeight: '300px',
-        backgroundColor: '#fff',
+        backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d',
         borderRadius: '0.625rem',
         padding: '4rem'
       }}
@@ -124,12 +126,25 @@ function SignupForm() {
             required
             sx={{ mb: 2 }}
           />
-          <FormInput
+          <TextField
+            variant="standard"
             type={showPassword ? "text" : "password"}
             placeholder='Password'
             name='password'
             required
+            error={!!errors['password']}
+            helperText={
+              errors['password'] ? (errors['password'].message) : ''
+            }
+            {...register('password')}
             InputProps={{ // <-- This is where the toggle button is added.
+              disableUnderline: true,
+              style: {
+                padding: '8px 20px',
+                borderRadius: '6px',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+              },
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton

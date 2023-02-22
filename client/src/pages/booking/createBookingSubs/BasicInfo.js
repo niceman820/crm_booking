@@ -11,8 +11,9 @@ import {
   FormControl,
   Select,
   MenuItem,
-  Modal
+  Modal,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useForm, FormProvider } from 'react-hook-form';
 import { object, string } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,7 +32,8 @@ const basicInfoSchema = object({
 });
 
 const BasicInfo = ({ activeStep, onhandleNext, onhandleBack, length }) => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const theme = useTheme();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [valueSearchEngine, setValueSearchEngine] = useState('');
@@ -67,7 +69,7 @@ const BasicInfo = ({ activeStep, onhandleNext, onhandleBack, length }) => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      sx={{ flexGrow: 1, flexDirection: 'column', paddingY: '5rem' }}
+      sx={{ flexGrow: 1, flexDirection: 'column', paddingY: '5rem', backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d' }}
     >
       <Container sx={{ maxWidth: { md: '650px' } }}>
         <Grid>
@@ -155,7 +157,9 @@ const BasicInfo = ({ activeStep, onhandleNext, onhandleBack, length }) => {
             <FormControl sx={{ mt: 2 }}>
               <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, mb: 1 }}>How did you fine me? <span style={{ color: 'red' }}>*</span></Typography>
               <Select
-                inputProps={{ sx: { color: '#3F4254', fontSize: '0.8rem', fontWeight: 600 } }}
+                inputProps={{ 
+                  sx: { color: '#3F4254', fontSize: '0.8rem', fontWeight: 600 } 
+                }}
                 displayEmpty={true}
                 value={valueSearchEngine}
                 renderValue={value => value ? value : 'Select ...'}
@@ -217,7 +221,7 @@ const BasicInfo = ({ activeStep, onhandleNext, onhandleBack, length }) => {
               Sorry, looks like there are some errors detected, please try again.
             </Typography>
             <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
-              <Button variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', backgroundColor: '#f5f8fa', boxShadow: 'none' }} onClick={handleClose}>Ok, got it!</Button>
+              <Button variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', backgroundColor: theme.palette.mode === 'light' && '#f5f8fa', boxShadow: 'none' }} onClick={handleClose}>Ok, got it!</Button>
             </Grid>
           </Grid>
         </Box>

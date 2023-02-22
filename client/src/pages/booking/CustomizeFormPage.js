@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ScrollToTop from "react-scroll-to-top";
 import { FileUploader } from "react-drag-drop-files";
-
+import { useTheme } from '@mui/material/styles';
 import {
   Button,
   Container,
@@ -25,6 +25,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 
 const CustomizeFormPage = () => {
+  const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [fileUploadError, setFileUploadError] = useState('');
@@ -71,7 +72,7 @@ const CustomizeFormPage = () => {
           xs={24}
           sx={{
             minHeight: '300px',
-            backgroundColor: '#fff',
+            backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d',
             borderRadius: 2
           }}
         >
@@ -91,9 +92,19 @@ const CustomizeFormPage = () => {
                     <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, width: 200 }} >Title</TableCell>
                     <TableCell align="left" sx={{ paddingX: 0 }} >
                       <TextField
+                        variant="standard"
                         fullWidth
-                        value='Welcome'
-                        inputProps={{ sx: { fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 } }}
+                        sx={{ mt: 1 }}
+                        value={'Welcome'}
+                        InputProps={{
+                          disableUnderline: true,
+                          style: {
+                            padding: '8px 20px',
+                            borderRadius: '6px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                          },
+                        }}
                       />
                     </TableCell>
                   </TableRow>
@@ -101,12 +112,21 @@ const CustomizeFormPage = () => {
                     <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, verticalAlign: 'top', width: 200 }} >Message</TableCell>
                     <TableCell align="left" sx={{ paddingX: 0 }} >
                       <TextField
+                        variant="standard"
                         fullWidth
-                        rows={5}
+                        sx={{ mt: 1 }}
                         multiline
+                        rows={8}
                         value={'I appreciate you connecting with me. To ensure your booking is accepted, please be sure to fill in this booking form in its entirety. - Ava'}
-                        inputProps={{ sx: { fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 } }}
-                        sx={{ border: 'none' }}
+                        InputProps={{
+                          disableUnderline: true,
+                          style: {
+                            padding: '15px 20px',
+                            borderRadius: '6px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                          },
+                        }}
                       />
                     </TableCell>
                   </TableRow>
@@ -130,9 +150,19 @@ const CustomizeFormPage = () => {
                     <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, width: 200 }} >Title</TableCell>
                     <TableCell align="left" sx={{ paddingX: 0 }} >
                       <TextField
+                        variant="standard"
                         fullWidth
-                        value='Thank you!'
-                        inputProps={{ sx: { fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 } }}
+                        sx={{ mt: 1 }}
+                        value={'Thank you!'}
+                        InputProps={{
+                          disableUnderline: true,
+                          style: {
+                            padding: '8px 20px',
+                            borderRadius: '6px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                          },
+                        }}
                       />
                     </TableCell>
                   </TableRow>
@@ -140,11 +170,21 @@ const CustomizeFormPage = () => {
                     <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, verticalAlign: 'top', width: 200 }} >Message</TableCell>
                     <TableCell align="left" sx={{ paddingX: 0 }} >
                       <TextField
+                        variant="standard"
                         fullWidth
-                        rows={8}
+                        sx={{ mt: 1 }}
                         multiline
+                        rows={8}
                         value={'Thank you for your booking. I have received your request and will get back to you shortly!'}
-                        inputProps={{ sx: { fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 } }}
+                        InputProps={{
+                          disableUnderline: true,
+                          style: {
+                            padding: '15px 20px',
+                            borderRadius: '6px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                          },
+                        }}
                       />
                     </TableCell>
                   </TableRow>
@@ -163,7 +203,7 @@ const CustomizeFormPage = () => {
           alignItems='center'
           sx={{
             minHeight: '300px',
-            backgroundColor: '#fff',
+            backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d',
             borderRadius: 2,
           }}
         >
@@ -188,15 +228,15 @@ const CustomizeFormPage = () => {
                   }
                   title="Drop logo here or click to upload."
                   titleTypographyProps={{ fontSize: '1rem', fontWeight: 600, color: fileUploadError ? 'tomato' : '#3F4254' }}
-                  subheader={ fileUploadError ? fileUploadError : "(jpg, png files accepted)"}
-                  subheaderTypographyProps={{ fontWeight: 600, color: fileUploadError? 'tomato' : '#A1A5B7', fontSize: '0.8rem' }}
+                  subheader={fileUploadError ? fileUploadError : "(jpg, png files accepted)"}
+                  subheaderTypographyProps={{ fontWeight: 600, color: fileUploadError ? 'tomato' : '#A1A5B7', fontSize: '0.8rem' }}
                   sx={{
                     border: '1px',
                     borderStyle: 'dashed',
                     borderColor: fileUploadError ? 'red' : '#009EF7',
                     borderRadius: 1,
                     mt: 2,
-                    backgroundColor: '#F1FAFF',
+                    backgroundColor: theme.palette.mode === 'light' ? '#F1FAFF' : '#212E48',
                     '&:hover ': {
                       cursor: 'pointer'
                     }

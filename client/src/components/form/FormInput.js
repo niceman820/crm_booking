@@ -1,27 +1,5 @@
 import { useFormContext, Controller } from 'react-hook-form';
 import { TextField } from '@mui/material';
-import { styled } from '@mui/material/styles';
-
-// ? Styled Material UI TextField Component
-const CssTextField = styled(TextField)({
-  "& label.Mui-focused": {
-    color: '#009EF7'
-  },
-  // focused color for input with variant='outlined'
-  "& .MuiOutlinedInput-root": {
-    padding: 0,
-    '&:hover fieldset': {
-      borderColor: '#E4E6EF',
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: '#009EF7'
-    }
-  },
-  '& .MuiInputBase-input.Mui-disabled': {
-    WebkitTextFillColor: "#000",
-    color: "#000"
-  },
-});
 
 const FormInput = ({ name, handleChange, ...otherProps }) => {
   // ? Utilizing useFormContext to have access to the form Context
@@ -34,30 +12,23 @@ const FormInput = ({ name, handleChange, ...otherProps }) => {
     <Controller
       control={control}
       name={name}
-      // rules={{ required: true }}
       render={({ field }) => (
-        <CssTextField
+        <TextField
           {...field}
           {...otherProps}
-          variant='outlined'
-          // sx={{ mt: '1.5rem' }}
+          variant="standard"
           error={!!errors[name]}
           helperText={
             errors[name] ? (errors[name].message) : ''
           }
-          // {...register(name)}
-          inputProps={{
+          InputProps={{
+            disableUnderline: true,
             style: {
-              height: '2.5rem',
-              padding: '0 10px',
+              padding: '8px 20px',
+              borderRadius: '6px',
+              fontSize: '0.8rem',
+              fontWeight: 600,
             },
-            sx: {
-              "&::placeholder": {
-                fontWeight: 600,
-                fontSize: '0.8rem',
-                opacity: 0.6
-              }
-            }
           }}
         />
       )}

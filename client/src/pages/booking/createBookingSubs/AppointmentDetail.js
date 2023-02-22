@@ -10,7 +10,7 @@ import {
   Radio,
   Modal
 } from "@mui/material";
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import RadioGroup, { useRadioGroup } from '@mui/material/RadioGroup';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -75,6 +75,7 @@ function MyFormControlLabel(props) {
 }
 
 const AppointmentDetail = ({ activeStep, onhandleNext, onhandleBack, length }) => {
+  const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(dayjs(new Date()));
   const [valueDuration, setValueDuration] = useState(0);
@@ -107,7 +108,7 @@ const AppointmentDetail = ({ activeStep, onhandleNext, onhandleBack, length }) =
       display='flex'
       alignItems='center'
       justifyContent='center'
-      sx={{ flexGrow: 1, flexDirection: 'column', paddingY: '5rem' }}
+      sx={{ flexGrow: 1, flexDirection: 'column', paddingY: '5rem', backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d' }}
     >
       <Container sx={{ maxWidth: { md: '650px' } }}>
         <Grid>
@@ -133,12 +134,34 @@ const AppointmentDetail = ({ activeStep, onhandleNext, onhandleBack, length }) =
               <Typography sx={{ fontSize: '0.8rem', fontWeight: 600 }}>Preferred Date & Time <span style={{ color: 'red' }}>*</span></Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker
-                  renderInput={(props) =>
-                    <TextField
-                      sx={{ width: '75%' }}
-                      {...props}
-                    />
-                  }
+                  renderInput={(props) => {
+                    const styleProps = {
+                      disableUnderline: true,
+                      style: {
+                        padding: '15px 20px',
+                        borderRadius: '6px',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                      }
+                    };
+                    props.InputProps = {
+                      ...props.InputProps,
+                      disableUnderline: true,
+                      style: {
+                        padding: '15px 20px',
+                        borderRadius: '6px',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                      }
+                    };
+                    return (
+                      <TextField
+                        variant="standard"
+                        {...props}
+                        sx={{ width: '75%' }}
+                      />
+                    );
+                  }}
                   value={value}
                   onChange={(newValue) => {
                     setValue(newValue);
@@ -173,6 +196,7 @@ const AppointmentDetail = ({ activeStep, onhandleNext, onhandleBack, length }) =
             <Grid sx={{ mt: 5 }}>
               <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, mb: 2 }}>Message <span style={{ color: 'red' }}>*</span></Typography>
               <TextField
+                variant="standard"
                 type="text"
                 fullWidth
                 multiline
@@ -183,6 +207,15 @@ const AppointmentDetail = ({ activeStep, onhandleNext, onhandleBack, length }) =
                   errors['message'] ? (errors['message'].message) : ''
                 }
                 {...register('message')}
+                InputProps={{
+                  disableUnderline: true,
+                  style: {
+                    padding: '15px 20px',
+                    borderRadius: '6px',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                  },
+                }}
               />
             </Grid>
           </Box>
@@ -232,7 +265,7 @@ const AppointmentDetail = ({ activeStep, onhandleNext, onhandleBack, length }) =
               Sorry, looks like there are some errors detected, please try again.
             </Typography>
             <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
-              <Button variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', backgroundColor: '#f5f8fa', boxShadow: 'none' }} onClick={handleClose}>Ok, got it!</Button>
+              <Button variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', backgroundColor: theme.palette.mode === 'light' && '#f5f8fa', boxShadow: 'none' }} onClick={handleClose}>Ok, got it!</Button>
             </Grid>
           </Grid>
         </Box>

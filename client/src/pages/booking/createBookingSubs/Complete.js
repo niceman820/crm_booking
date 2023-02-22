@@ -1,4 +1,5 @@
 import React from "react";
+import { useTheme } from '@mui/material/styles';
 import {
   Grid,
   Typography,
@@ -11,21 +12,21 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const Complete = ({ activeStep, onhandleBack }) => {
-
+  const theme = useTheme();
   return (
     <Grid
       item
       display='flex'
       alignItems='center'
       justifyContent='center'
-      sx={{ flexGrow: 1, flexDirection: 'column', paddingY: '5rem' }}
+      sx={{ flexGrow: 1, flexDirection: 'column', paddingY: '5rem', backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d' }}
     >
       <Container sx={{ maxWidth: { md: '650px' } }}>
         <Grid>
-          <Typography sx={{ fontSize: '1.2rem', fontWeight: 600, color: '#181C32' }}>Thank you for your booking!</Typography>
+          <Typography sx={{ fontSize: '1.2rem', fontWeight: 600 }}>Thank you for your booking!</Typography>
           <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, mt: 1 }}>I appreciate you taking the time to fill out my booking form. I will be in touch very shortly!</Typography>
         </Grid>
-        <Stack direction='row' sx={{ backgroundColor: '#E8FFF3', paddingY: '1rem', borderRadius: '0.5rem', border: '1px dashed #50cd89', mt: 3 }} >
+        <Stack direction='row' sx={{ backgroundColor: theme.palette.mode === 'light' && '#E8FFF3', paddingY: '1rem', borderRadius: '0.5rem', border: '1px dashed #50cd89', mt: 3 }} >
           <Grid item>
             <ErrorOutlineIcon sx={{ fontSize: '2.5rem', opacity: 0.8, marginInlineStart: 2, color: '#50cd89' }} />
           </Grid>

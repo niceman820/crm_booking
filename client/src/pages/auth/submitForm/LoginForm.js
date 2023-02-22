@@ -1,4 +1,5 @@
 import React from "react";
+import { useTheme } from '@mui/material/styles';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Grid, Typography, Box, Button } from "@mui/material";
 import FormInput from "../../../components/form/FormInput";
@@ -17,6 +18,7 @@ const loginSchema = object({
 });
 
 function LoginForm() {
+  const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const defaultValues = {
@@ -44,7 +46,7 @@ function LoginForm() {
       sx={{
         width: { sm: '550px' },
         minHeight: '300px',
-        backgroundColor: '#fff',
+        backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d',
         borderRadius: '0.625rem',
         padding: '4rem'
       }}

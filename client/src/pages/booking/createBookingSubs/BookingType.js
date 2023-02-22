@@ -8,7 +8,7 @@ import {
   Button
 } from "@mui/material";
 
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import RadioGroup, { useRadioGroup } from '@mui/material/RadioGroup';
 
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
@@ -16,6 +16,7 @@ import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
+  const theme = useTheme();
   const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
     ({ theme, checked }) => ({
       border: checked ? `1px dashed ${theme.palette.primary.main}` : '1px dashed #E4E6EF',
@@ -45,15 +46,15 @@ const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
       display='flex'
       alignItems='center'
       justifyContent='center'
-      sx={{ flexGrow: 1, flexDirection: 'column', paddingY: '5rem' }}
+      sx={{ flexGrow: 1, flexDirection: 'column', paddingY: '5rem', backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d', }}
     >
       <Container sx={{ maxWidth: { sm: '650px' } }}>
         <Grid>
-          <Typography sx={{ fontSize: '1.2rem', fontWeight: 600, color: '#181C32' }}>Welcome</Typography>
+          <Typography sx={{ fontSize: '1.2rem', fontWeight: 600 }}>Welcome</Typography>
           <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, mt: 1 }}>I appreciate you connecting with me. To ensure your booking is accepted, please be sure to fill in this booking form in its entirety. - Ava</Typography>
         </Grid>
         <Grid sx={{ mt: 7.5 }}>
-          <Typography sx={{ fontSize: '1.2rem', fontWeight: 600, color: '#181C32' }}>Booking Type</Typography>
+          <Typography sx={{ fontSize: '1.2rem', fontWeight: 600 }}>Booking Type</Typography>
           <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, mt: 1 }}>Choose the experience you prefer.</Typography>
         </Grid>
         <Grid sx={{ mt: 2.5 }}>

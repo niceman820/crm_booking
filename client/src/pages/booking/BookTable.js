@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Paper,
@@ -22,6 +22,7 @@ import {
   Chip,
   Modal
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import PropTypes from 'prop-types';
 import { visuallyHidden } from '@mui/utils';
 
@@ -195,15 +196,16 @@ EnhancedTableHead.propTypes = {
 };
 
 const BookTable = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [open, setOpen] = React.useState(false);
-  const [confirm, setConfirm] = React.useState(false);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('');
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [open, setOpen] = useState(false);
+  const [confirm, setConfirm] = useState(false);
 
   const handleOpen = () => setOpen(true);
 
@@ -272,23 +274,31 @@ const BookTable = () => {
     navigate('/bookings/details');
   }
 
-
-
-
   return (
-    <Grid container justifyContent='center' sx={{ mt: { sm: 3, md: 6 }, width: '100%', backgroundColor: '#fff', borderRadius: 2 }} >
+    <Grid
+      container
+      justifyContent='center'
+      sx={{
+        mt: { sm: 3, md: 6 },
+        width: '100%',
+        borderRadius: 2,
+        paddingY: 3,
+        backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d'
+      }}
+    >
       <Grid
         item
         container
         direction='row'
         justifyContent='space-between'
-        sx={{ width: '90%', pt: 5 }}
+        sx={{ width: '95%', pt: 1 }}
       >
         <Paper
           sx={{
             p: '0px 4px',
             display: 'flex',
-            backgroundColor: '#eef3f7'
+            backgroundColor: theme.palette.mode === 'light' ? '#eef3f7' : '#1b1b29',
+            boxShadow: 'none'
           }}
         >
           <IconButton sx={{ p: '0px 10px' }} aria-label="menu">
@@ -331,7 +341,7 @@ const BookTable = () => {
 
       </Grid>
 
-      <Paper sx={{ width: '90%', mb: 2, mt: 5, boxShadow: 'none' }}>
+      <Paper sx={{ width: '95%', mb: 2, mt: 5, boxShadow: 'none' }}>
         {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
         <TableContainer>
           <Table
@@ -374,11 +384,10 @@ const BookTable = () => {
                         />
                       </TableCell>
                       <TableCell
-                        component="th"
                         id={labelId}
                         scope="row"
                         padding="none"
-                        sx={{ fontSize: '0.8rem', opacity: 0.8, py: 2 }}
+                        sx={{ fontSize: '0.8rem', opacity: 0.8, height: '70px' }}
                       >
                         <CardHeader
                           avatar={
@@ -436,7 +445,7 @@ const BookTable = () => {
         /> */}
       </Paper>
 
-      <Grid sx={{ mt: 5, width: '90%' }} container justifyContent='flex-end'>
+      <Grid sx={{ mt: 1, width: '95%' }} container justifyContent='flex-end'>
         <Pagination
           count={Math.ceil(rows.length / rowsPerPage)}
           shape="rounded"
@@ -477,7 +486,7 @@ const BookTable = () => {
               Are you sure you want to delete selected customers?
             </Typography>
             <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
-              <Button color="error" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={() => {setConfirm(true); setOpen(false);}}>Yes, delete!</Button>
+              <Button color="error" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={() => { setConfirm(true); setOpen(false); }}>Yes, delete!</Button>
               <Button color="success" variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={handleClose}>No, cancel</Button>
             </Grid>
           </Grid>
@@ -514,7 +523,7 @@ const BookTable = () => {
           </Grid>
         </Box>
       </Modal>
-      
+
     </Grid>
   );
 }

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import ScrollToTop from "react-scroll-to-top";
-
+import { useTheme } from "@mui/material/styles";
 import {
   Avatar,
   Button,
@@ -28,7 +28,8 @@ import ShutterSpeedIcon from '@mui/icons-material/ShutterSpeed';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const EditNotificationPage = () => {
-  const [open, setOpen] = React.useState(false);
+  const theme = useTheme();
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   return (
@@ -63,7 +64,7 @@ const EditNotificationPage = () => {
           xs={24}
           sx={{
             minHeight: '300px',
-            backgroundColor: '#fff',
+            backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d',
             borderRadius: 2
           }}
         >
@@ -87,18 +88,43 @@ const EditNotificationPage = () => {
                   </TableRow>
                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                     <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, width: 200 }} >Email Subject</TableCell>
-                    <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 }} >Your booking request has been approved!</TableCell>
+                    <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 }} >
+                      <TextField
+                        variant="standard"
+                        fullWidth
+                        sx={{ mt: 1 }}
+                        value={'Your booking request has been approved!'}
+                        InputProps={{
+                          disableUnderline: true,
+                          style: {
+                            padding: '8px 20px',
+                            borderRadius: '6px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                          },
+                        }}
+                      />
+                    </TableCell>
                   </TableRow>
                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                     <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, verticalAlign: 'top', width: 200 }} >Message</TableCell>
                     <TableCell align="left" sx={{ paddingX: 0 }} >
                       <TextField
+                        variant="standard"
                         fullWidth
-                        rows={8}
+                        sx={{ mt: 1 }}
                         multiline
+                        rows={8}
                         value={'Dear {client_fname},\n\nThank you for your booking. Your appointment has been approved and confirmed!\n\nI look forward to seeing you on {booking_date} at {booking_time}.\n\nThank you and see you soon!\n\nAva'}
-                        inputProps={{ sx: { fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 } }}
-                        sx={{ border: 'none' }}
+                        InputProps={{
+                          disableUnderline: true,
+                          style: {
+                            padding: '15px 20px',
+                            borderRadius: '6px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                          },
+                        }}
                       />
                     </TableCell>
                   </TableRow>
@@ -126,17 +152,43 @@ const EditNotificationPage = () => {
                   </TableRow>
                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                     <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, width: 200 }} >Email Subject</TableCell>
-                    <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 }} >Your booking request has been declined</TableCell>
+                    <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 }} >
+                      <TextField
+                        variant="standard"
+                        fullWidth
+                        sx={{ mt: 1 }}
+                        value={'Your booking request has been declined'}
+                        InputProps={{
+                          disableUnderline: true,
+                          style: {
+                            padding: '8px 20px',
+                            borderRadius: '6px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                          },
+                        }}
+                      />
+                    </TableCell>
                   </TableRow>
                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                     <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, verticalAlign: 'top', width: 200 }} >Message</TableCell>
                     <TableCell align="left" sx={{ paddingX: 0 }} >
                       <TextField
+                        variant="standard"
                         fullWidth
-                        rows={8}
+                        sx={{ mt: 1 }}
                         multiline
+                        rows={8}
                         value={'Thank you for your booking request. Unfortunately, I will not be able to accomodate you.'}
-                        inputProps={{ sx: { fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 } }}
+                        InputProps={{
+                          disableUnderline: true,
+                          style: {
+                            padding: '15px 20px',
+                            borderRadius: '6px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                          },
+                        }}
                       />
                     </TableCell>
                   </TableRow>
@@ -155,7 +207,7 @@ const EditNotificationPage = () => {
           alignItems='center'
           sx={{
             minHeight: '300px',
-            backgroundColor: '#fff',
+            backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1e1e2d',
             borderRadius: 2,
           }}
         >

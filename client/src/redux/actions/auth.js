@@ -34,7 +34,7 @@ export const loadUser = () => async (dispatch) => {
 }
 
 // Register User
-export const register = (data) => async (dispatch) => {
+export const signup = (data) => async (dispatch) => {
   try {
     const res = await api.post('/users', data);
     console.log('register user ', res.data);
