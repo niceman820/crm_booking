@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { ColorModeContext } from '../../assets/theme/color-context';
+import makeStyles from "@material-ui/styles/makeStyles";
 import {
   AppBar,
   Box,
@@ -33,34 +34,54 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import MailIcon from '@mui/icons-material/Mail';
-import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ErrorIcon from '@mui/icons-material/Error';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import MonitorIcon from '@mui/icons-material/Monitor';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import FlareIcon from '@mui/icons-material/Flare';
+import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/actions/auth';
 
+import {
+  THEME_MENU,
+  USER_PROFILE_MENU,
+  USER_SUB_MENU,
+  MY_BOOKING_MENU,
+  BOOKING_FORM
+} from '../../utils/constants';
+
+const useStyles = makeStyles({
+  popOverRoot: {
+    pointerEvents: "none"
+  },
+});
+
 const pagesList = [
   {
     page: { title: 'Dashboard', href: '/bookings' },
-    subpages: []
+    subpages: [],
+    typeMenu: ''
   },
   {
     page: { title: 'My Bookings', href: '' },
     subpages: [
-      { title: 'View All Bookings', href: '/bookings' },
-      { title: 'Edit Notifications', href: '/bookings/edit-notifications' },
-      { title: 'Create Booking', href: '/bookings/new-booking' }
-    ]
+      { title: 'View All Bookings', href: '/bookings', icon: <MailIcon /> },
+      { title: 'Edit Notifications', href: '/bookings/edit-notifications', icon: <MailIcon /> },
+      { title: 'Create Booking', href: '/bookings/new-booking', icon: <NoteAddIcon /> }
+    ],
+    typeMenu: MY_BOOKING_MENU
   },
   {
     page: { title: 'Booking Form', href: '' },
     subpages: [
-      { title: 'Customize Form', href: '/bookings/customize-form' },
-      { title: 'Get Embed Code', href: '/bookings/embed' },
-    ]
+      { title: 'Customize Form', href: '/bookings/customize-form', icon: <FlareIcon /> },
+      { title: 'Get Embed Code', href: '/bookings/embed', icon: <DynamicFormIcon /> },
+    ],
+    typeMenu: BOOKING_FORM
   },
 ];
 
@@ -83,10 +104,14 @@ function Navbar() {
   const [anchorSubscriptionMenu, setAnchorSubscriptionMenu] = useState(null);
   const [anchorThemeMenu, setAnchorThemeMenu] = useState(null);
   const [subpageItems, setSubpageItems] = useState([]);
+  const [subpageTypeMenu, setSubpageTypeMenu] = useState();
 
   const { user } = useSelector(state => ({
     user: state.auth.user
   }));
+
+  const styles = useStyles();
+  let currentlyHovering = false;
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -96,37 +121,69 @@ function Navbar() {
     setAnchorSidebar(open);
   };
 
-  const handleOpenDropdownMenu = (subpages) => (event) => {
-    setAnchorDropdownMenu(event.currentTarget);
-    setSubpageItems(subpages);
+  function handleClick(event, typeMenu, subPageContent) {
+    if (subPageContent) {
+      setSubpageItems(subPageContent);
+      setSubpageTypeMenu(typeMenu);
+    }
+    if (anchorThemeMenu !== event.currentTarget) {
+      switch (typeMenu) {
+        case THEME_MENU:
+          setAnchorThemeMenu(event.currentTarget);
+          break;
+        case USER_PROFILE_MENU:
+          setAnchorUserMenu(event.currentTarget);
+          break;
+        case USER_SUB_MENU:
+          setAnchorSubscriptionMenu(event.currentTarget);
+          break;
+        case MY_BOOKING_MENU:
+          setAnchorDropdownMenu(event.currentTarget);
+          break;
+        case BOOKING_FORM:
+          setAnchorDropdownMenu(event.currentTarget);
+          break;
+
+        default:
+          break;
+      }
+    }
   }
 
-  const handleCloseDropdownMenu = () => {
-    setAnchorDropdownMenu(null);
-  };
-
-  const handleOpenUserMenu = (event) => {
-    setAnchorUserMenu(event.currentTarget);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorUserMenu(null);
-  };
-
-  const handleOpenSubscriptionMenu = (event) => {
-    setAnchorSubscriptionMenu(event.currentTarget);
+  function handleHover() {
+    currentlyHovering = true;
   }
 
-  const handleCloseSubscriptionMenu = () => {
-    setAnchorSubscriptionMenu(null);
+  const handleClose = (typeMenu) => () => {
+    switch (typeMenu) {
+      case THEME_MENU:
+        setAnchorThemeMenu(null);
+        break;
+      case USER_PROFILE_MENU:
+        setAnchorUserMenu(null);
+        break;
+      case USER_SUB_MENU:
+        setAnchorSubscriptionMenu(null);
+        break;
+      case MY_BOOKING_MENU:
+        setAnchorDropdownMenu(null);
+        break;
+      case BOOKING_FORM:
+        setAnchorDropdownMenu(null);
+        break;
+
+      default:
+        break;
+    }
   }
 
-  const handleOpenThemeMenu = (event) => {
-    setAnchorThemeMenu(event.currentTarget);
-  }
-
-  const handleCloseThemeMenu = () => {
-    setAnchorThemeMenu(null);
+  const handleCloseHover = (typeMenu) => () => {
+    currentlyHovering = false;
+    setTimeout(() => {
+      if (!currentlyHovering) {
+        handleClose(typeMenu)();
+      }
+    }, 1);
   }
 
   const handleLogout = () => {
@@ -165,6 +222,11 @@ function Navbar() {
               aria-haspopup="true"
               onClick={handleOpenSidebar(true)}
               color="inherit"
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                }
+              }}
             >
               <MenuIcon sx={{ color: '#fff' }} />
             </IconButton>
@@ -202,20 +264,22 @@ function Navbar() {
                   aria-label="account of current user"
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
-                  onClick={handleCloseDropdownMenu}
                   sx={{
                     my: 2,
+                    padding: 1,
                     marginInlineStart: 2,
                     color: 'white',
                     display: 'block',
                     textTransform: 'none',
                     fontWeight: 600,
-                    fontSize: '0.8rem'
-                    // '&:hover': {
-                    //   backgroundColor: 'rgba(255, 255, 255, 0.3)'
-                    // }
+                    fontSize: '0.8rem',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                    }
                   }}
-                  onMouseOver={handleOpenDropdownMenu(page.subpages)}
+                  onClick={(e) => handleClick(e, page.typeMenu, page.subpages)}
+                  onMouseOver={(e) => handleClick(e, page.typeMenu, page.subpages)}
+                  onMouseLeave={handleCloseHover(page.typeMenu)}
                 >
                   {page.page.title}
                 </Button>
@@ -236,13 +300,21 @@ function Navbar() {
                   horizontal: 'left',
                 }}
                 open={Boolean(anchorDropdownMenu)}
-                onClose={handleCloseDropdownMenu}
-                MenuListProps={{ onMouseLeave: handleCloseDropdownMenu }}
+                onClose={handleClose(subpageTypeMenu)}
+                MenuListProps={{
+                  onMouseEnter: handleHover,
+                  onMouseLeave: handleCloseHover(subpageTypeMenu),
+                  style: { pointerEvents: "auto" }
+                }}
+                PopoverClasses={{
+                  root: styles.popOverRoot
+                }}
               >
                 {subpageItems.map((subpage) => (
-                  <MenuItem key={subpage.title} onClick={handleCloseDropdownMenu} sx={{ py: 1.5 }}>
+                  <MenuItem key={subpage.title} onClick={() => setAnchorDropdownMenu(null)} sx={{ py: 1.5, color: theme.palette.mode === 'light' && 'black', opacity: 0.8, alignItems: 'center', fontSize: '0.8rem' }}>
+                    {subpage.icon}
                     <Link to={subpage.href}>
-                      <Typography textAlign="center" sx={{ color: theme.palette.mode === 'light' && 'black', fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 }}>
+                      <Typography textAlign="center" sx={{ color: theme.palette.mode === 'light' && 'black', fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 1 }}>
                         {subpage.title}
                       </Typography>
                     </Link>
@@ -253,25 +325,48 @@ function Navbar() {
 
           {/* icon list on navbar */}
           <Box sx={{ display: 'flex' }}>
-            <IconButton size="large" color="inherit">
+            <IconButton
+              size="large"
+              color="inherit"
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                }
+              }}
+            >
               <SearchIcon sx={{ color: '#fff' }} />
             </IconButton>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+            <IconButton
+              size="large"
+              aria-label="show 4 new mails"
+              color="inherit"
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                }
+              }}
+            >
               <Badge badgeContent={4} color="primary">
                 <MailIcon sx={{ color: '#fff' }} />
               </Badge>
             </IconButton>
             <IconButton
               size="large"
-              aria-label="show 17 new notifications"
               color="inherit"
-              onMouseOver={handleOpenThemeMenu}
+              onClick={(e) => handleClick(e, THEME_MENU)}
+              onMouseOver={(e) => handleClick(e, THEME_MENU)}
+              onMouseLeave={handleCloseHover(THEME_MENU)}
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                }
+              }}
             >
               <WbSunnyIcon sx={{ color: '#fff' }} />
             </IconButton>
             {/* Light & Dark theme picker dropdown */}
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: '40px' }}
               anchorEl={anchorThemeMenu}
               anchorOrigin={{
                 vertical: 'top',
@@ -283,23 +378,48 @@ function Navbar() {
                 horizontal: 'right',
               }}
               open={Boolean(anchorThemeMenu)}
-              onClose={handleCloseThemeMenu}
+              onClose={handleClose(THEME_MENU)}
+              MenuListProps={{
+                onMouseEnter: handleHover,
+                onMouseLeave: handleCloseHover(THEME_MENU),
+                style: { pointerEvents: "auto" }
+              }}
+              PopoverClasses={{
+                root: styles.popOverRoot
+              }}
               PaperProps={{ sx: { minWidth: '150px' } }}
-              MenuListProps={{ onMouseLeave: handleCloseThemeMenu }}
             >
-              <MenuItem sx={{ py: 1.5, '&:hover': { color: 'primary' } }} onClick={colorMode.setLightMode} >
+              <MenuItem
+                sx={{ py: 1.5 }}
+                onClick={() => {
+                  colorMode.setLightMode();
+                  setAnchorThemeMenu(null);
+                }}
+              >
                 <ListItemIcon sx={{ minWidth: '0!important' }}>
                   <WbSunnyIcon fontSize="small" />
                 </ListItemIcon>
                 <Typography textAlign="center" sx={{ color: theme.palette.mode === 'light' && 'black', fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2 }}>Light</Typography>
               </MenuItem>
-              <MenuItem sx={{ py: 1.5 }} onClick={colorMode.setDarkMode}>
+              <MenuItem
+                sx={{ py: 1.5 }}
+                onClick={() => {
+                  colorMode.setDarkMode();
+                  setAnchorThemeMenu(null);
+                }}
+              >
                 <ListItemIcon sx={{ minWidth: '0!important' }}>
                   <DarkModeIcon fontSize="small" />
                 </ListItemIcon>
                 <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2, color: theme.palette.mode === 'light' && 'black' }}>Dark</Typography>
               </MenuItem>
-              <MenuItem sx={{ py: 1.5 }} onClick={colorMode.setLightMode}>
+              <MenuItem
+                sx={{ py: 1.5 }}
+                onClick={() => {
+                  colorMode.setLightMode();
+                  setAnchorThemeMenu(null);
+                }}
+              >
                 <ListItemIcon sx={{ minWidth: '0!important' }}>
                   <MonitorIcon fontSize="small" />
                 </ListItemIcon>
@@ -308,17 +428,19 @@ function Navbar() {
             </Menu>
 
             <IconButton
-              onClick={handleOpenUserMenu}
               aria-label="account of current user"
               aria-controls="menu-appbar1"
               aria-haspopup="true"
               sx={{ paddingRight: 0 }}
+              onClick={(e) => handleClick(e, USER_PROFILE_MENU)}
+              onMouseOver={(e) => handleClick(e, USER_PROFILE_MENU)}
+              onMouseLeave={handleCloseHover(USER_PROFILE_MENU)}
             >
               <Avatar alt="Remy Sharp" variant="rounded" sx={{ width: '2rem', height: '2rem' }} />
             </IconButton>
             {/* User profile */}
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: '40px' }}
               id="menu-appbar1"
               anchorEl={anchorUserMenu}
               anchorOrigin={{
@@ -331,9 +453,16 @@ function Navbar() {
                 horizontal: 'right',
               }}
               open={Boolean(anchorUserMenu)}
-              onClose={handleCloseUserMenu}
+              onClose={handleClose(USER_PROFILE_MENU)}
               PaperProps={{ sx: { minWidth: '250px' } }}
-            // MenuListProps={{ onMouseLeave: handleCloseUserMenu }}
+              MenuListProps={{
+                onMouseEnter: handleHover,
+                onMouseLeave: handleCloseHover(USER_PROFILE_MENU),
+                style: { pointerEvents: "auto" }
+              }}
+              PopoverClasses={{
+                root: styles.popOverRoot
+              }}
             >
               <MenuItem>
                 <CardHeader
@@ -348,20 +477,25 @@ function Navbar() {
                 />
               </MenuItem>
               <Divider />
-              <MenuItem onClick={handleCloseUserMenu} sx={{ py: 1.5, marginInlineStart: 1 }}>
+              <MenuItem onClick={() => setAnchorUserMenu(null)} sx={{ py: 1.5, marginInlineStart: 1 }}>
                 <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: theme.palette.mode === 'light' && 'black' }}>My Profile</Typography>
               </MenuItem>
-              <MenuItem onClick={handleCloseUserMenu} sx={{ py: 1.5, marginInlineStart: 1 }}>
+              <MenuItem onClick={() => setAnchorUserMenu(null)} sx={{ py: 1.5, marginInlineStart: 1 }}>
                 <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: theme.palette.mode === 'light' && 'black' }}>Edit Profile</Typography>
               </MenuItem>
-              <MenuItem sx={{ py: 1.5, marginInlineStart: 1 }} onMouseOver={handleOpenSubscriptionMenu} >
+              <MenuItem
+                sx={{ py: 1.5, marginInlineStart: 1 }}
+                onClick={(e) => handleClick(e, USER_SUB_MENU)}
+                onMouseOver={(e) => handleClick(e, USER_SUB_MENU)}
+                onMouseLeave={handleCloseHover(USER_SUB_MENU)}
+              >
                 <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: theme.palette.mode === 'light' && 'black' }}>My Subscription</Typography>
                 <ListItemIcon sx={{ minWidth: '0!important', marginInlineStart: 'auto' }}>
                   <NavigateNextIcon />
                 </ListItemIcon>
               </MenuItem>
               <Divider />
-              <MenuItem onClick={handleCloseUserMenu} sx={{ py: 1.5, marginInlineStart: 1 }}>
+              <MenuItem onClick={() => setAnchorUserMenu(null)} sx={{ py: 1.5, marginInlineStart: 1 }}>
                 <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: theme.palette.mode === 'light' && 'black' }}>Account Setting</Typography>
               </MenuItem>
               <MenuItem onClick={handleLogout} sx={{ marginInlineStart: 1 }}>
@@ -382,15 +516,25 @@ function Navbar() {
                 horizontal: 'left',
               }}
               open={Boolean(anchorSubscriptionMenu)}
-              onClose={handleCloseSubscriptionMenu}
-              MenuListProps={{ onMouseLeave: handleCloseSubscriptionMenu }}
+              onClose={handleClose(USER_SUB_MENU)}
+              MenuListProps={{
+                onMouseEnter: handleHover,
+                onMouseLeave: () => {
+                  handleCloseHover(USER_SUB_MENU)();
+                  handleCloseHover(USER_PROFILE_MENU)();
+                },
+                style: { pointerEvents: "auto" }
+              }}
+              PopoverClasses={{
+                root: styles.popOverRoot
+              }}
               style={{ // Add here you negative margin
                 marginInlineStart: '-208px'
               }}
               PaperProps={{ sx: { width: '200px' } }}
             >
               {subscriptionPages.map((page) => (
-                <MenuItem key={page.title} sx={{ py: 1.5, marginInlineStart: 1 }}>
+                <MenuItem key={page.title} sx={{ py: 1.5, marginInlineStart: 1 }} onClick={() => { setAnchorSubscriptionMenu(null); setAnchorUserMenu(null) }}>
                   <Typography textAlign="center" sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, color: theme.palette.mode === 'light' && 'black' }}>{page.title}</Typography>
                   {page.title === 'Statements' && <ListItemIcon sx={{ minWidth: '0!important', marginInlineStart: 'auto' }}>
                     <ErrorIcon fontSize="small" />
@@ -439,12 +583,12 @@ function Navbar() {
                   id={`panel${index}bh-header`}
                 >
                   <Typography
-                    color='primary'
+                    // color='primary'
                     sx={{
                       flexShrink: 0,
                       fontSize: '0.8rem',
                       fontWeight: 600,
-                      color: '#212121'
+                      color: theme.palette.mode === 'light' && '#5E6278'
                     }}
                   >
                     {page.page.title}
@@ -453,12 +597,14 @@ function Navbar() {
                 {page.subpages.length > 0 && <AccordionDetails>
                   {page.subpages.map((subpage, index) => (
                     <ListItem key={subpage.title} disablePadding >
-                      <ListItemButton>
-                        <ListItemIcon>
-                          {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                        </ListItemIcon>
-                        <ListItemText primary={subpage.title} primaryTypographyProps={{ fontSize: '0.8rem', color: '#212121' }} />
-                      </ListItemButton>
+                      <Link to={subpage.href} onClick={handleOpenSidebar(false)}>
+                        <ListItemButton>
+                          <ListItemIcon>
+                            {subpage.icon}
+                          </ListItemIcon>
+                          <ListItemText primary={subpage.title} primaryTypographyProps={{ fontSize: '0.8rem', color: theme.palette.mode === 'light' && '#5E6278' }} />
+                        </ListItemButton>
+                      </Link>
                     </ListItem>
                   ))}
                 </AccordionDetails>}
