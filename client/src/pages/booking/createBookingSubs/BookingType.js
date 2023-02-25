@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Grid,
   Typography,
@@ -32,6 +32,12 @@ const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
     }),
   );
 
+  const { bookFormId } = useSelector(state => ({
+    bookFormId: state.auth.user.bookFormId
+  }))
+
+  console.log(' book ', bookFormId);
+
   function MyFormControlLabel(props) {
     const radioGroup = useRadioGroup();
 
@@ -50,7 +56,7 @@ const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
   const handleClick = () => {
     dispatch({
       type: BOOKING_TYPE,
-      payload: bookingType
+      payload: {bookingType: bookingType, bookFormId: bookFormId}
     })
     onhandleNext();
   }

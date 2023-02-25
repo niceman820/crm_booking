@@ -1,24 +1,27 @@
 const Book = require('../models/Book');
-const { validationResult } = require('express-validator');
+const User = require('../models/User');
+const { sendMail } = require('./mailerController');
+const moment = require('moment');
 
 const createBooking = async (req, res) => {
   const initialData = JSON.parse(req.body.initialData);
   try {
-    const { 
+    const {
       screenMethod,
       ref1,
       ref2,
     } = req.body;
     const {
-      client, 
+      client,
       bookingType,
       date,
       duration,
       message,
+      bookFormId
     } = initialData;
-    const dateString = (Date.now() * Math.random()).toString();
-    const bookFormId = dateString.substring(0,6);
-    
+    // const dateString = (Date.now() * Math.random()).toString();
+    // const bookFormId = dateString.substring(0,6);
+
     let book = new Book({
       client,
       bookingType,
@@ -31,7 +34,20 @@ const createBooking = async (req, res) => {
       bookFormId
     });
 
-    await book.save();
+    const newbook = await book.save();
+    const user = await User.findOne({ bookFormId: newbook.bookFormId });
+
+    console.log('new book ', newbook);
+    console.log('user ', user);
+
+    sendMail(
+      user.email,
+      user.fullName,
+      newbook.fullName,
+      newbook.duration,
+      moment(newbook.date).format('DD/MM/YYYY'),
+      moment(newbook.date).format('LT')
+    );
 
   } catch (err) {
     console.error(err.message);

@@ -53,6 +53,13 @@ const BookSchema = new Schema({
   idCard: {
     type: String
   }
+}, {
+  toObject: { virtuals: true },
+  toJSON: { virtuals: true }
+});
+
+BookSchema.virtual('fullName').get(function() {
+  return this.client.firstName + ' ' + this.client.lastName;
 });
 
 module.exports = mongoose.model('books', BookSchema);

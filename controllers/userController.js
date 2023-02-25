@@ -88,12 +88,16 @@ const signUp = async (req, res) => {
 			{ forceHttps: true }
 		);
 
+		const dateString = (Date.now() * Math.random()).toString();
+    const bookFormId = dateString.substring(0,6);
+
 		user = new User({
 			firstName,
 			lastName,
 			email,
 			avatar,
-			password
+			password,
+			bookFormId
 		});
 
 		const salt = await bcrypt.genSalt(10);

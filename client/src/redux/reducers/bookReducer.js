@@ -8,6 +8,7 @@ import {
 } from "../types";
 
 const initialState = {
+  bookFormId: '',
   bookingType: '',
   client: {},
   date: null,
@@ -25,7 +26,8 @@ function bookReducer(state = initialState, action) {
     case BOOKING_TYPE:
       return {
         ...state,
-        bookingType: payload,
+        bookingType: payload.bookingType,
+        bookFormId: payload.bookFormId,
       }; 
     case BASIC_INFO:
       return {

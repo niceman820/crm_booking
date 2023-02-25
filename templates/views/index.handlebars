@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <style>
+        body: {
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="border: 1px solid black;  width: 100%">
+        <div style="padding:30px;">
+            {{>header}}
+            <h2 style="font-family: Verdana;">You have new booking</h2>
+            <br>
+            <p>Dear {{ user }}</p>
+            <br>
+            <p>You have a new booking from {{ client }}</p>
+            <p><strong>Date: </strong>{{ date }}</p>
+            <p><strong>Time: </strong>{{ time }}</p>
+            <p><strong>Duration: </strong>{{ duration }}</p>
+            <p>
+                For full details, please login to your Client Dashboard.
+            </p>
+        </div>
+        {{>footer}}
+
+    </div>
+</body>
+
+</html>
