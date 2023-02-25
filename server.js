@@ -2,6 +2,10 @@ const express = require('express');
 const connectDB = require('./config/db');
 const path = require('path');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const multer = require('multer');
+const upload = multer({dest: 'uploads/'});
+// const upload = multer({ dest: 'uploads/' })
 
 const app = express();
 
@@ -10,6 +14,14 @@ connectDB();
 
 // Init Middleware
 app.use(express.json());
+
+// body parser middleware
+app.use(bodyParser.json());
+app.use(express.urlencoded({
+    extended: true
+}))
+app.use('/uploads', express.static('uploads'));
+app.use('/static', express.static(path.join(__dirname, 'public')));
 
 // cors Middleware
 app.use(cors({
@@ -21,6 +33,7 @@ app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/profile', require('./routes/api/profile'));
 app.use('/api/posts', require('./routes/api/posts'));
+app.use('/api/booking', require('./routes/api/book'));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

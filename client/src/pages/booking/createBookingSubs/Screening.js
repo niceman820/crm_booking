@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useTheme } from '@mui/material/styles';
 import {
   Grid,
@@ -27,6 +28,8 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import DonutLargeIcon from '@mui/icons-material/DonutLarge';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import idIcon from '../../../assets/img/id-icon.png';
+import { useSelector } from "react-redux";
+import { createBooking } from "../../../redux/actions/book";
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -45,10 +48,19 @@ const screenSchema = object({
 })
 
 const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
+  const dispatch = useDispatch();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [valueScreenMethod, setValueScreenMethod] = useState('first');
+  const [uploadFile, setUploadFile] = useState();
+
+  const { bookingData } = useSelector(state => ({
+    bookingData: state.book
+  }));
+
+  // console.log('booking data ', bookingData)
+
   const defaultValues = {
     ref1: '',
     ref2: '',
@@ -94,19 +106,31 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
     if (files.length == 0) return;
     if (!ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type)) return;
     const file = files[0];
+    console.log('file ', file.name)
+    setUploadFile(file);
     const reader = new FileReader();
     const url = reader.readAsDataURL(file);
     reader.onloadend = (e) => {
       setSelectedFile(reader.result);
     };
+
   }
 
   // ? Form Handler
   const onSubmitHandler = (data) => {
     console.log('------------', data);
     console.log('---', valueScreenMethod);
+    console.log('----', uploadFile);
     setOpen(false);
-    onhandleNext();
+    let formData = new FormData();
+    formData.append('idCard', uploadFile);
+    formData.append('screenMethod', valueScreenMethod);
+    formData.append('ref1', data.ref1);
+    formData.append('ref2', data.ref2);
+    formData.append('initialData', JSON.stringify(bookingData));
+    // onhandleNext();
+    dispatch(createBooking(formData));
+
   };
 
   return (
@@ -127,6 +151,7 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
             display='flex'
             flexDirection='column'
             component='form'
+            encType="multipart/form-data"
             noValidate
             autoComplete='off'
             sx={{ mt: 5 }}
@@ -134,9 +159,9 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
           >
             <Grid sx={{ mt: 5 }}>
               <Typography sx={{ fontSize: '0.8rem', fontWeight: 600 }}>Select Screening Method <span style={{ color: 'red' }}>*</span></Typography>
-              <RadioGroup sx={{ mt: 3 }} defaultValue={'first'} onChange={(e, value) => setValueScreenMethod(value)} >
+              <RadioGroup sx={{ mt: 3 }} defaultValue={'companion references'} onChange={(e, value) => setValueScreenMethod(value)} >
                 <FormControlLabel
-                  value="first"
+                  value="companion references"
                   label={
                     <Grid container display='flex' alignItems='center' >
                       <AccountBalanceIcon sx={{ fontSize: '1.5rem', opacity: 0.8, marginInlineStart: 2 }} />
@@ -158,7 +183,7 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
                   }}
                 />
                 <FormControlLabel
-                  value="second"
+                  value="employment information"
                   label={
                     <Grid container display='flex' alignItems='center' >
                       <DonutLargeIcon sx={{ fontSize: '1.5rem', opacity: 0.8, marginInlineStart: 2 }} />

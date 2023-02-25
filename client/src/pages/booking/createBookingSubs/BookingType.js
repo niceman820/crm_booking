@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   Grid,
   Typography,
@@ -14,8 +15,11 @@ import RadioGroup, { useRadioGroup } from '@mui/material/RadioGroup';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { BOOKING_TYPE } from "../../../redux/types";
 
 const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
+  const dispatch = useDispatch();
+  const [bookingType, setBookingType] = useState('incall');
   const theme = useTheme();
   const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
     ({ theme, checked }) => ({
@@ -39,6 +43,18 @@ const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
     return <StyledFormControlLabel checked={checked} {...props} />;
   }
 
+  const handleChange = (event) => {
+    setBookingType(event.target.value);
+  }
+
+  const handleClick = () => {
+    dispatch({
+      type: BOOKING_TYPE,
+      payload: bookingType
+    })
+    onhandleNext();
+  }
+
   return (
 
     <Grid
@@ -58,9 +74,15 @@ const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
           <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, mt: 1 }}>Choose the experience you prefer.</Typography>
         </Grid>
         <Grid sx={{ mt: 2.5 }}>
-          <RadioGroup row name="use-radio-group" defaultValue="first" sx={{ justifyContent: 'space-between' }} >
+          <RadioGroup
+            row
+            // defaultValue={bookingType}
+            value={bookingType}
+            sx={{ justifyContent: 'space-between' }}
+            onChange={handleChange}
+          >
             <MyFormControlLabel
-              value="first"
+              value="incall"
               label={
                 <Grid sx={{ marginInlineStart: 1 }} >
                   <Typography sx={{ fontWeight: 600, mb: 1 }} >Incall</Typography>
@@ -75,7 +97,7 @@ const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
               }
             />
             <MyFormControlLabel
-              value="second"
+              value="outcall"
               label={
                 <Grid sx={{ marginInlineStart: 1 }} >
                   <Typography sx={{ fontWeight: 600, mb: 1 }} >Outcall</Typography>
@@ -90,7 +112,7 @@ const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
               }
             />
             <MyFormControlLabel
-              value="third"
+              value="flyme"
               label={
                 <Grid sx={{ marginInlineStart: 1 }} >
                   <Typography sx={{ fontWeight: 600, mb: 1 }} >Fly me to you</Typography>
@@ -117,7 +139,7 @@ const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
         </Button>
         <Button
           variant="contained"
-          onClick={onhandleNext}
+          onClick={handleClick}
           endIcon={<ArrowForwardIcon />}
           sx={{ mt: 1, mr: 1, color: '#fff', textTransform: 'none', fontWeight: 600 }}
         >

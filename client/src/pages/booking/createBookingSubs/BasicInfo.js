@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   Grid,
   Typography,
@@ -22,6 +23,7 @@ import FormInput from "../../../components/form/FormInput";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { BASIC_INFO } from "../../../redux/types";
 
 const basicInfoSchema = object({
   firstName: string().min(1, 'First Name is required').max(70),
@@ -32,11 +34,16 @@ const basicInfoSchema = object({
 });
 
 const BasicInfo = ({ activeStep, onhandleNext, onhandleBack, length }) => {
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const theme = useTheme();
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [isEmailChecked, setIsEmailChecked] = useState(false);
+  const [isPhoneChecked, setIsPhoneChecked] = useState(false);
+  const [isTextChecked, setIsTextChecked] = useState(false);
   const [valueSearchEngine, setValueSearchEngine] = useState('');
+  const theme = useTheme();
+
+  const handleClose = () => setOpen(false);
+
   const defaultValues = {
     firstName: '',
     lastName: '',
@@ -55,6 +62,20 @@ const BasicInfo = ({ activeStep, onhandleNext, onhandleBack, length }) => {
   const onSubmitHandler = (data) => {
     console.log('------------', data);
     setOpen(false);
+    let clientData = {
+      ...data,
+      preferredComuncation: {
+        email: isEmailChecked,
+        phone: isPhoneChecked,
+        text: isTextChecked
+      },
+      searchEngine: valueSearchEngine
+    }
+    console.log('data ', clientData);
+    dispatch({
+      type: BASIC_INFO,
+      payload: clientData
+    })
     onhandleNext();
   };
 
@@ -150,15 +171,30 @@ const BasicInfo = ({ activeStep, onhandleNext, onhandleBack, length }) => {
             </FormControl>
             <Stack direction='row' sx={{ mt: 2, alignItems: 'center' }}>
               <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, mr: 3 }}>Preferred Communication:</Typography>
-              <FormControlLabel label={<Typography sx={{ fontWeight: 600, fontSize: '0.8rem', opacity: 0.8 }} >Email</Typography>} control={<Checkbox />} />
-              <FormControlLabel label={<Typography sx={{ fontWeight: 600, fontSize: '0.8rem', opacity: 0.8 }} >Phone</Typography>} control={<Checkbox />} />
-              <FormControlLabel label={<Typography sx={{ fontWeight: 600, fontSize: '0.8rem', opacity: 0.8 }} >Text</Typography>} control={<Checkbox />} />
+              <FormControlLabel
+                value={isEmailChecked}
+                label={<Typography sx={{ fontWeight: 600, fontSize: '0.8rem', opacity: 0.8 }} >Email</Typography>}
+                control={<Checkbox />}
+                onChange={e => setIsEmailChecked(prev => !prev)}
+              />
+              <FormControlLabel
+                value={isPhoneChecked}
+                label={<Typography sx={{ fontWeight: 600, fontSize: '0.8rem', opacity: 0.8 }} >Phone</Typography>}
+                control={<Checkbox />}
+                onChange={e => setIsPhoneChecked(prev => !prev)}
+              />
+              <FormControlLabel
+                value={isTextChecked}
+                label={<Typography sx={{ fontWeight: 600, fontSize: '0.8rem', opacity: 0.8 }} >Text</Typography>}
+                control={<Checkbox />}
+                onChange={e => setIsTextChecked(prev => !prev)}
+              />
             </Stack>
             <FormControl sx={{ mt: 2 }}>
               <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, mb: 1 }}>How did you fine me? <span style={{ color: 'red' }}>*</span></Typography>
               <Select
-                inputProps={{ 
-                  sx: { color: '#3F4254', fontSize: '0.8rem', fontWeight: 600 } 
+                inputProps={{
+                  sx: { color: '#3F4254', fontSize: '0.8rem', fontWeight: 600 }
                 }}
                 displayEmpty={true}
                 value={valueSearchEngine}

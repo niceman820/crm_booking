@@ -24,8 +24,21 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { useDispatch } from "react-redux";
+import { APPOINTMENT_DETAIL } from "../../../redux/types";
 
-const durationList = ['1 hr', '1.5 hrs', '2 hrs', '4 hrs', '6 hrs', '8 hrs', '12 hrs', '24 hrs', '48 hrs', 'Custom']
+const durationList = [
+  { title: '1 hr', duration: 1 },
+  { title: '1.5 hrs', duration: 1.5 },
+  { title: '2 hrs', duration: 2 },
+  { title: '4 hrs', duration: 4 },
+  { title: '6 hrs', duration: 6 },
+  { title: '8 hrs', duration: 8 },
+  { title: '12 hrs', duration: 12 },
+  { title: '24 hrs', duration: 24 },
+  { title: '48 hrs', duration: 48 },
+  { title: 'Custom', duration: 0 },
+]
 
 const appointmentSchema = object({
   // preferredDate: date({
@@ -75,14 +88,14 @@ function MyFormControlLabel(props) {
 }
 
 const AppointmentDetail = ({ activeStep, onhandleNext, onhandleBack, length }) => {
+  const dispatch = useDispatch();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(dayjs(new Date()));
-  const [valueDuration, setValueDuration] = useState(0);
+  const [valueDuration, setValueDuration] = useState(1);
 
   // Form Handler
   const defaultValues = {
-    // preferredDate: '',
     message: ''
   };
   const methods = useForm({
@@ -95,10 +108,19 @@ const AppointmentDetail = ({ activeStep, onhandleNext, onhandleBack, length }) =
 
   // ? Form Handler
   const onSubmitHandler = (data) => {
-    console.log('------------', data);
-    console.log('----', valueDuration);
-    console.log('--', dayjs(value).format('L LT'))
+    // console.log('------------', data);
+    // console.log('----', valueDuration);
+    // console.log('--', dayjs(value).format('L LT'))
     setOpen(false);
+    let appointmentData = {
+      date: value,
+      duration: valueDuration,
+      message: data.message
+    }
+    dispatch({
+      type: APPOINTMENT_DETAIL,
+      payload: appointmentData
+    })
     onhandleNext();
   };
 
@@ -173,17 +195,17 @@ const AppointmentDetail = ({ activeStep, onhandleNext, onhandleBack, length }) =
               <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, mb: 2 }}>Select Booking Duration <span style={{ color: 'red' }}>*</span></Typography>
               <RadioGroup
                 row
-                defaultValue={0}
+                defaultValue={1}
                 sx={{ justifyContent: 'space-between' }}
                 onChange={(e, value) => setValueDuration(value)}
               >
-                {durationList.map((duration, index) => (
+                {durationList.map((item, index) => (
                   <MyFormControlLabel
-                    key={duration}
-                    value={index}
+                    key={item.title}
+                    value={item.duration}
                     label={
                       <Grid>
-                        <Typography sx={{ fontWeight: 600, fontSize: '1.2rem', margin: 'auto' }}>{duration}</Typography>
+                        <Typography sx={{ fontWeight: 600, fontSize: '1.2rem', margin: 'auto' }}>{item.title}</Typography>
                       </Grid>
                     }
                     control={
