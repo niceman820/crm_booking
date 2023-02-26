@@ -64,7 +64,7 @@ const BasicInfo = ({ activeStep, onhandleNext, onhandleBack, length }) => {
     setOpen(false);
     let clientData = {
       ...data,
-      preferredComuncation: {
+      preferredCommuncation: {
         email: isEmailChecked,
         phone: isPhoneChecked,
         text: isTextChecked

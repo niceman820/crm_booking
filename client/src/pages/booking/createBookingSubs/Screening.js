@@ -56,7 +56,15 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
   const [uploadFile, setUploadFile] = useState();
 
   const { bookingData } = useSelector(state => ({
-    bookingData: state.book
+    bookingData: {
+      bookFormId: state.book.bookFormId,
+      bookingType: state.book.bookingType,
+      client: state.book.client,
+      date: state.book.date,
+      duration: state.book.duration,
+      message: state.book.message,
+      screenMethod: state.book.screenMethod,
+    }
   }));
 
   // console.log('booking data ', bookingData)
@@ -87,19 +95,6 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
   const handleIDCardRemove = () => {
     setSelectedFile(null);
     reset({ idCard: [] });
-    // const data = new FormData()
-    // data.append('file', selectedFile.selectedFile, selectedFile.selectedFile.name)
-    // axios
-    //   .post(endpoint, data, {
-    //     onUploadProgress: ProgressEvent => {
-    //       this.setState({
-    //         loaded: (ProgressEvent.loaded / ProgressEvent.total * 100),
-    //       })
-    //     },
-    //   })
-    //   .then(res => {
-    //     console.log(res.statusText)
-    //   })
   }
 
   const handleSelectFile = files => {

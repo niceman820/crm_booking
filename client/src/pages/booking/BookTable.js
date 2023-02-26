@@ -30,34 +30,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import { Link, useNavigate } from "react-router-dom";
-
-function createData(name, ocupation, date, duration, source, status) {
-  return {
-    name,
-    ocupation,
-    date,
-    duration,
-    source,
-    status
-  };
-}
-
-const rows = [
-  createData('Cupcake', 'Engineer', '19 Aug 2022, 6:43 am', 67, 4.3, 0),
-  createData('Donut', 'Dentist', '1 Jan 2020, 3:55 am', 51, 4.9, 1),
-  createData('Eclair', 'Driver', '19 Aug 2022, 6:43 am', 24, 6.0, 0),
-  createData('Frozen yoghurt', 'Delivery', '20 Aug 1993, 07: 00 am', 24, 4.0, 2),
-  createData('Gingerbread', 'Doctor', '19 Aug 2022, 6:43 am', 49, 3.9, 1),
-  createData('Honeycomb', 'Chef', '10 Jan 1997, 8:10 pm', 87, 6.5, 0),
-  createData('Ice cream sandwich', 'Developer', '17 Feb 2023, 11:35 am', 37, 4.3, 0),
-  createData('Jelly Bean', 'Therapist', '27 Dec 1987, 12:10 am', 94, 0.0, 2),
-  createData('KitKat', 'Business Person', '28 Oct 1995, 3:05 pm', 65, 7.0, 2),
-  createData('Lollipop', 'Project Manager', '27 Sep 1996, 4:10 am', 98, 0.0, 1),
-  createData('Marshmallow', 'Scrum Master', '9 Feb 2002, 11:10 am', 81, 2.0, 1),
-  createData('Nougat', 'Investor', '16 Feb 1998, 5:40 am', 9, 37.0, 1),
-  createData('Oreo', 'Architector', '8 Mar 2005, 10:10 pm', 63, 4.0, 2),
-];
+import {  useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteBookings } from "../../redux/actions/book";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -196,6 +171,11 @@ EnhancedTableHead.propTypes = {
 };
 
 const BookTable = () => {
+  const {bookingData} = useSelector(state => ({
+    bookingData: state.book.bookingData
+  }));
+  console.log('booking data ', bookingData);
+  const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
   const [order, setOrder] = useState('asc');
@@ -206,9 +186,7 @@ const BookTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
-
-  const handleOpen = () => setOpen(true);
-
+ 
   const handleClose = () => setOpen(false);
 
   const handleRequestSort = (event, property) => {
@@ -219,19 +197,19 @@ const BookTable = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = bookingData.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -242,7 +220,7 @@ const BookTable = () => {
         selected.slice(selectedIndex + 1),
       );
     }
-
+    console.log('new ', newSelected);
     setSelected(newSelected);
   };
 
@@ -259,19 +237,26 @@ const BookTable = () => {
   //   setDense(event.target.checked);
   // };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
+  // Avoid a layout jump when reaching the last page with empty bookingData.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - bookingData.length) : 0;
 
   const handleChangePage = (event, page) => {
     // console.log('event page here ', event.currentTarget, page)
     setPage(page - 1);
   }
 
-  const handleGoDetailPage = () => {
-    navigate('/bookings/details');
+  const handleGoDetailPage = (bookId) => () => {
+    navigate(`/bookings/details/${bookId}`);
+  }
+
+  const deleteBooking = () => {
+    setConfirm(true); 
+    setOpen(false);
+    // console.log('sss ', selected);
+    dispatch(deleteBookings({bookingIds: selected}));
   }
 
   return (
@@ -324,7 +309,7 @@ const BookTable = () => {
               variant="contained"
               color="error"
               sx={{ color: '#fff', fontWeight: 600, height: '2.5rem', textTransform: 'none', marginInlineStart: 3 }}
-              onClick={handleOpen}
+              onClick={() => setOpen(true)}
             >
               Delete Selected
             </Button>
@@ -354,13 +339,13 @@ const BookTable = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={bookingData.length}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {bookingData.length > 0 && stableSort(bookingData, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
@@ -369,7 +354,7 @@ const BookTable = () => {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={index}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -380,7 +365,7 @@ const BookTable = () => {
                             'aria-labelledby': labelId,
                           }}
                           sx={{ color: '#ccc' }}
-                          onClick={(event) => handleClick(event, row.name)}
+                          onClick={(event) => handleClick(event, row.id)}
                         />
                       </TableCell>
                       <TableCell
@@ -392,30 +377,30 @@ const BookTable = () => {
                         <CardHeader
                           avatar={
                             <Avatar sx={{ height: '3rem', width: '3rem' }} aria-label="recipe">
-                              {row.name[0]}
+                              {row.fullName[0]}
                             </Avatar>
                           }
-                          title={row.name}
+                          title={row.fullName}
                           subheader={'test@email.com'}
                           sx={{ padding: 0, color: '#212121' }}
                         />
                       </TableCell>
-                      <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{row.ocupation}</TableCell>
+                      <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{row.client.occupation}</TableCell>
                       <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{row.date}</TableCell>
-                      <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{row.duration}</TableCell>
+                      <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{row.duration} {row.duration == 1 ? 'Hour' : 'Hours'}</TableCell>
                       <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{row.source}</TableCell>
                       <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>
                         {
                           row.status === 0
-                            ? <Chip label="Approved" color="primary" variant="outlined" />
+                            ? <Chip label="Unconfirmed" color="warning" variant="outlined" />
                             : (row.status === 1
-                              ? <Chip label="Unconfirmed" color="warning" variant="outlined" />
-                              : <Chip label="Declined" color="error" variant="outlined" />)
+                              ? <Chip label="Declined" color="error" variant="outlined" />
+                              : <Chip label="Approved" color="primary" variant="outlined" />)
                         }
                       </TableCell>
                       <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>
                         <Stack direction='row'>
-                          <Button onClick={handleGoDetailPage} sx={{ fontSize: '0.8rem', textTransform: 'none', fontWeight: 600 }}>View</Button>
+                          <Button onClick={handleGoDetailPage(row._id)} sx={{ fontSize: '0.8rem', textTransform: 'none', fontWeight: 600 }}>View</Button>
                           <Button sx={{ fontSize: '0.8rem', textTransform: 'none', fontWeight: 600 }}>Delete</Button>
                         </Stack>
                       </TableCell>
@@ -437,7 +422,7 @@ const BookTable = () => {
         {/* <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={bookingData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -447,7 +432,7 @@ const BookTable = () => {
 
       <Grid sx={{ mt: 1, width: '95%' }} container justifyContent='flex-end'>
         <Pagination
-          count={Math.ceil(rows.length / rowsPerPage)}
+          count={Math.ceil(bookingData.length / rowsPerPage)}
           shape="rounded"
           color="primary"
           onChange={handleChangePage}
@@ -486,7 +471,7 @@ const BookTable = () => {
               Are you sure you want to delete selected customers?
             </Typography>
             <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
-              <Button color="error" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={() => { setConfirm(true); setOpen(false); }}>Yes, delete!</Button>
+              <Button color="error" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={deleteBooking}>Yes, delete!</Button>
               <Button color="success" variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={handleClose}>No, cancel</Button>
             </Grid>
           </Grid>
@@ -524,6 +509,38 @@ const BookTable = () => {
         </Box>
       </Modal>
 
+      {/* <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            borderRadius: 2,
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Grid sx={{ width: '80%', margin: 'auto' }}>
+            <ErrorOutlineIcon sx={{ fontSize: '7rem', margin: 'auto', display: 'flex', color: '#FFC700' }} />
+            <Typography id="modal-modal-description" sx={{ mt: 2, textAlign: 'center' }}>
+              Are you sure you want to delete selected customers?
+            </Typography>
+            <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
+              <Button color="error" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={() => { setConfirm(true); setOpen(false); }}>Yes, delete!</Button>
+              <Button color="success" variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={handleClose}>No, cancel</Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal> */}
+      
     </Grid>
   );
 }

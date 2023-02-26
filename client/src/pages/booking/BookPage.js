@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   Grid,
   Typography
 } from "@mui/material";
 import BookTable from "./BookTable";
+import { useDispatch } from "react-redux";
+import { getBookingData } from "../../redux/actions/book";
 
 const BookPage = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getBookingData());
+  }, []);
 
   return (
     <Container maxWidth="lg">

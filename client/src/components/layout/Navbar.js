@@ -436,7 +436,7 @@ function Navbar() {
               onMouseOver={(e) => handleClick(e, USER_PROFILE_MENU)}
               onMouseLeave={handleCloseHover(USER_PROFILE_MENU)}
             >
-              <Avatar alt="Remy Sharp" variant="rounded" sx={{ width: '2rem', height: '2rem' }} />
+              <Avatar alt="Your Name" variant="rounded" sx={{ width: '2rem', height: '2rem' }} />
             </IconButton>
             {/* User profile */}
             <Menu
@@ -468,7 +468,7 @@ function Navbar() {
                 <CardHeader
                   avatar={
                     <Avatar sx={{ bgcolor: 'tomato' }} aria-label="recipe" variant='rounded'>
-                      R
+                      {user?.firstName[0]}
                     </Avatar>
                   }
                   title={user?.fullName}

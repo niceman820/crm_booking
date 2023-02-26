@@ -57,9 +57,13 @@ const sendMail = (userEmail, userName, clientName, duration, date, time) => {
       console.log('Email sent: ' + info.response);
     }
   });
+}
+
+const sendApproveMail = () => {
 
 }
 
 module.exports = {
   sendMail,
+  sendApproveMail,
 }

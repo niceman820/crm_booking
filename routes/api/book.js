@@ -1,9 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const { check } = require('express-validator');
-const { createBooking } = require('../../controllers/bookController');
+const { 
+  createBooking,
+  getBookingData, 
+  getBookingDetailData,
+  approveBooking,
+  declineBooking,
+  deleteBookings
+} = require('../../controllers/bookController');
 const multer  = require('multer');
+const auth = require('../../middleware/auth');
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -33,12 +40,29 @@ router.post(
   createBooking
 );
 
+// @route    GET api/booking
+// @desc     Get booking data by user
+// @access   Private
+router.get('/', auth, getBookingData);
 
-// router.route('/').post(upload.single('idCard'), (req, res) => {
-//   console.log('req is here', req.file);
-//   return res.json("File uploaded");
-// });
+// @route    DELETE api/booking
+// @desc     delete bookings by user
+// @access   Private
+router.post('/delete', auth, deleteBookings);
 
+// @route    GET api/booking/detail/:bookingId
+// @desc     Get booking detail data by user
+// @access   Private
+router.get('/detail/:bookingId', auth, getBookingDetailData);
 
+// @route    PUT api/booking/detail/:bookingId
+// @desc     approve booking by user
+// @access   Private
+router.put('/detail/:bookingId', auth, approveBooking);
+
+// @route    PATCH api/booking/detail/:bookingId
+// @desc     decline booking by user
+// @access   Private
+router.patch('/detail/:bookingId', auth, declineBooking);
 
 module.exports = router;

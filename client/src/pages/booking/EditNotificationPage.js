@@ -30,6 +30,10 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 const EditNotificationPage = () => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [approvedTitle, setApprovedTitle] = useState('Your booking request has been approved!');
+  const [approvedMessage, setApprovedMessage] = useState('Dear {client_fname},\n\nThank you for your booking. Your appointment has been approved and confirmed!\n\nI look forward to seeing you on {booking_date} at {booking_time}.\n\nThank you and see you soon!\n\nAva');
+  const [declinedTitle, setDeclinedTitle] = useState('Your booking request has been declined');
+  const [declinedMessage, setDeclinedMessage] = useState('Thank you for your booking request. Unfortunately, I will not be able to accomodate you.');
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   return (
@@ -93,7 +97,8 @@ const EditNotificationPage = () => {
                         variant="standard"
                         fullWidth
                         sx={{ mt: 1 }}
-                        value={'Your booking request has been approved!'}
+                        value={approvedTitle}
+                        onChange={(e) => setApprovedTitle(e.target.value)}
                         InputProps={{
                           disableUnderline: true,
                           style: {
@@ -115,7 +120,8 @@ const EditNotificationPage = () => {
                         sx={{ mt: 1 }}
                         multiline
                         rows={8}
-                        value={'Dear {client_fname},\n\nThank you for your booking. Your appointment has been approved and confirmed!\n\nI look forward to seeing you on {booking_date} at {booking_time}.\n\nThank you and see you soon!\n\nAva'}
+                        value={approvedMessage}
+                        onChange={(e) => setApprovedMessage(e.target.value)}
                         InputProps={{
                           disableUnderline: true,
                           style: {
@@ -157,7 +163,8 @@ const EditNotificationPage = () => {
                         variant="standard"
                         fullWidth
                         sx={{ mt: 1 }}
-                        value={'Your booking request has been declined'}
+                        value={declinedTitle}
+                        onChange={(e) => setDeclinedTitle(e.target.value)}
                         InputProps={{
                           disableUnderline: true,
                           style: {
@@ -179,7 +186,8 @@ const EditNotificationPage = () => {
                         sx={{ mt: 1 }}
                         multiline
                         rows={8}
-                        value={'Thank you for your booking request. Unfortunately, I will not be able to accomodate you.'}
+                        value={declinedMessage}
+                        onChange={(e) => setDeclinedMessage(e.target.value)}
                         InputProps={{
                           disableUnderline: true,
                           style: {

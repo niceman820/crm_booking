@@ -6,6 +6,7 @@ const moment = require('moment');
 const createBooking = async (req, res) => {
   const initialData = JSON.parse(req.body.initialData);
   try {
+    console.log('initialData ', initialData.client.preferredCommuncation.email)
     const {
       screenMethod,
       ref1,
@@ -19,8 +20,12 @@ const createBooking = async (req, res) => {
       message,
       bookFormId
     } = initialData;
-    // const dateString = (Date.now() * Math.random()).toString();
-    // const bookFormId = dateString.substring(0,6);
+
+    const preferredCommuncation = {
+      email: initialData.client.preferredCommuncation.email ? true : false,
+      text: initialData.client.preferredCommuncation.text ? true : false,
+      phone: initialData.client.preferredCommuncation.phone ? true : false,
+    }
 
     let book = new Book({
       client,
@@ -31,14 +36,13 @@ const createBooking = async (req, res) => {
       screenMethod,
       ref1,
       ref2,
-      bookFormId
+      bookFormId,
+      idCard: req.file.path,
+      preferredCommuncation: preferredCommuncation
     });
 
     const newbook = await book.save();
     const user = await User.findOne({ bookFormId: newbook.bookFormId });
-
-    console.log('new book ', newbook);
-    console.log('user ', user);
 
     sendMail(
       user.email,
@@ -55,6 +59,80 @@ const createBooking = async (req, res) => {
   }
 }
 
+const getBookingData = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const bookFormId = user.bookFormId;
+    const bookingData = await Book.find({ bookFormId: bookFormId, isRemoved: false });
+
+    res.json(bookingData);
+
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
+const getBookingDetailData = async (req, res) => {
+  try {
+    const bookingDetailData = await Book.findById(req.params.bookingId);
+    res.json(bookingDetailData);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
+const approveBooking = async (req, res) => {
+  try {
+    await Book.findByIdAndUpdate(
+      req.params.bookingId,
+      { status: 2 }
+    );
+
+    res.send({ message: 'You approved for this booking.' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
+const declineBooking = async (req, res) => {
+  try {
+    await Book.findByIdAndUpdate(
+      req.params.bookingId,
+      { status: 1 }
+    );
+    res.send({ message: 'You declined for this booking.' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
+const deleteBookings = async (req, res) => {
+  try {
+    console.log('delete ', req.body);
+    const { bookingIds } = req.body;
+    bookingIds.map(async (bookingId) => {
+      await Book.findByIdAndUpdate(
+        bookingId,
+        { isRemoved: true }
+      );
+    });
+    res.send({ message: 'You removed for this booking.' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
 module.exports = {
   createBooking,
+  getBookingData,
+  getBookingDetailData,
+  approveBooking,
+  declineBooking,
+  deleteBookings,
 }

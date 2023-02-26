@@ -21,11 +21,22 @@ const BookSchema = new Schema({
     occupation: {
       type: String
     },
-    preferredCommuncation: {
-      type: String
-    },
     searchEngine: {
       type: String
+    }
+  },
+  preferredCommuncation: {
+    email: {
+      type: Boolean,
+      default: false
+    },
+    text: {
+      type: Boolean,
+      default: false
+    },
+    phone: {
+      type: Boolean,
+      default: false
     }
   },
   bookingType: {
@@ -52,6 +63,14 @@ const BookSchema = new Schema({
   },
   idCard: {
     type: String
+  },
+  status: {
+    type: Number,
+    default: 0   // 0 - unconfirmed, 1 - declined, 2 - approved
+  },
+  isRemoved: {
+    type: Boolean,
+    default: false
   }
 }, {
   toObject: { virtuals: true },

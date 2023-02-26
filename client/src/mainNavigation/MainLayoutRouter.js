@@ -27,7 +27,7 @@ const MainLayoutRouter = () => {
       <main className="main-content" style={{ minHeight: 'calc(100vh - 166px)' }}>
         <Routes>
           <Route path="/bookings" element={<BookPage />} />
-          <Route path="/bookings/details" element={<BookDetailPage />} />
+          <Route path="/bookings/details/:bookId" element={<BookDetailPage />} />
           <Route path="/bookings/edit-notifications" element={<EditNotificationPage />} />
           <Route path="/bookings/customize-form" element={<CustomizeFormPage />} />
           <Route path="/bookings/embed" element={<EmbedPage />} />
