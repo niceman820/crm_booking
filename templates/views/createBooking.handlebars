@@ -119,25 +119,27 @@
                       <!--begin:Text-->
                       <div
                         style="font-size: 14px; font-weight: 500; margin-bottom: 27px; font-family:Arial,Helvetica,sans-serif;">
-                        <p style="margin-bottom:9px; color:#181C32; font-size: 22px; font-weight:700">Hey Marcus, thanks
-                          for signing up!</p>
-                        <p style="margin-bottom:2px; color:#7E8299">Lots of people make mistakes while creating</p>
-                        <p style="margin-bottom:2px; color:#7E8299">paragraphs. Some writers just put whitespace in</p>
-                        <p style="margin-bottom:2px; color:#7E8299">their text in random places</p>
+                        <p style="margin-bottom:9px; color:#181C32; font-size: 22px; font-weight:700">You have a new booking!</p>
+                        <p style="margin-bottom:2px; color:#7E8299">Dear {{ user }}</p>
+                        <p style="margin-bottom:2px; color:#7E8299">You have a new booking from {{ client }}.</p>
+                        <p style="margin-bottom:2px; color:#7E8299"><strong>Date: </strong>{{ date }}</p>
+                        <p style="margin-bottom:2px; color:#7E8299"><strong>Time: </strong>{{ time }} hours</p>
+                        <p style="margin-bottom:2px; color:#7E8299"><strong>Duration: </strong>{{ duration }}</p>
+                        <p style="margin-top:10px; color:#7E8299">For full details, please login to your Clientl Dashboard.</p>
                       </div>
                       <!--end:Text-->
 
                       <!--begin:Action-->
-                      <a href='/metronic/authentication/general/welcome' target="_blank"
+                      {{!-- <a href='/metronic/authentication/general/welcome' target="_blank"
                         style="background-color:#50cd89; border-radius:6px;display:inline-block; padding:11px 19px; color: #FFFFFF; font-size: 14px; font-weight:500;">
                         Activate Account
-                      </a>
+                      </a> --}}
                       <!--begin:Action-->
                     </div>
                     <!--end:Email content-->
                   </td>
                 </tr>
-
+{{!-- 
 
                 <tr style="display: flex; justify-content: center; margin:0 60px 35px 60px">
                   <td align="start" valign="start" style="padding-bottom: 10px;">
@@ -296,17 +298,17 @@
                     <a href="#"><img alt="Logo" src="/metronic/assets/media/email/icon-twitter.svg" /></a>
                   </td>
                 </tr>
-
+--}}
                 <tr>
                   <td align="center" valign="center"
                     style="font-size: 13px; padding:0 15px; text-align:center; font-weight: 500; color: #A1A5B7;font-family:Arial,Helvetica,sans-serif">
-                    <p> &copy Copyright KeenThemes.
-                      <a href="https://keenthemes.com" rel="noopener" target="_blank"
+                    <p> &copy Powered by
+                      <a href="https://aaa.com" rel="noopener" target="_blank"
                         style="font-weight: 600;font-family:Arial,Helvetica,sans-serif">Unsubscribe</a>&nbsp;
-                      from newsletter.
+                      Clientl.
                     </p>
                   </td>
-                </tr>
+                </tr> 
               </tbody>
             </table>
           </div>

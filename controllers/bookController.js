@@ -56,7 +56,14 @@ const createBooking = async (req, res) => {
     //   moment(newbook.date).format('LT')
     // );
 
-    sendCreateMail(user.email);
+    sendCreateMail(
+      user.email,
+      user.fullName,
+      newbook.fullName,
+      newbook.duration,
+      moment(newbook.date).format('DD/MM/YYYY'),
+      moment(newbook.date).format('LT')
+    );
 
   } catch (err) {
     console.error(err.message);

@@ -59,7 +59,7 @@ const sendMail = (userEmail, userName, clientName, duration, date, time) => {
   });
 }
 
-const sendCreateMail = (userEmail) => {
+const sendCreateMail = (userEmail, userName, clientName, duration, date, time) => {
   // console.log('mail data ', userEmail, userName, clientName, duration, date, time);
   var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -76,13 +76,13 @@ const sendCreateMail = (userEmail) => {
     to: userEmail,
     subject: 'A New Booking from Clientl',
     template: 'createBooking',
-    // context: {
-    //   user: userName,
-    //   client: clientName,
-    //   duration: duration,
-    //   date: date,
-    //   time: time,
-    // },
+    context: {
+      user: userName,
+      client: clientName,
+      duration: duration,
+      date: date,
+      time: time,
+    },
     // attachments: [
     //   { filename: 'logo.png', path: path.resolve(__dirname, '../assets/images/metronic.png') }
     // ]
