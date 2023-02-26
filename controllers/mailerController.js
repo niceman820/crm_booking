@@ -6,7 +6,7 @@ const viewPath = path.resolve(__dirname, '../templates/views/');
 const partialsPath = path.resolve(__dirname, '../templates/partials');
 
 const sendMail = (userEmail, userName, clientName, duration, date, time) => {
-  console.log('mail data ', userName, clientName, duration, date, time);
+  console.log('mail data ', userEmail, userName, clientName, duration, date, time);
   var transporter = nodemailer.createTransport({
     service: 'gmail',
     port: 467,
@@ -30,7 +30,7 @@ const sendMail = (userEmail, userName, clientName, duration, date, time) => {
       time: time,
     },
     attachments: [
-      { filename: 'logo.png', path: path.resolve(__dirname, './assets/images/metronic.png') }
+      { filename: 'logo.png', path: path.resolve(__dirname, '../assets/images/metronic.png') }
     ]
   };
 
@@ -43,7 +43,7 @@ const sendMail = (userEmail, userName, clientName, duration, date, time) => {
       defaultLayout: false,
       //partials directory path
       partialsDir: partialsPath,
-      express
+      // express
     },
     //View path declare
     viewPath: viewPath,

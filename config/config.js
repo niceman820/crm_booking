@@ -1,5 +1,5 @@
 const config = {
-  mongoURI: "mongodb://localhost:27017/Clientl",
+  mongoURI: "mongodb://127.0.0.1:27017/Clientl",
   jwtSecret: "crm_clientl",
   // subscriptionSecret: "subscription_encryption",
   // gmail_api_key: "ycqfofoxuqvtkhok",
