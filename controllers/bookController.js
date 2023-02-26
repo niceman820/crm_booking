@@ -1,6 +1,9 @@
 const Book = require('../models/Book');
 const User = require('../models/User');
-const { sendMail } = require('./mailerController');
+const {
+  sendMail,
+  sendCreateMail
+} = require('./mailerController');
 const moment = require('moment');
 
 const createBooking = async (req, res) => {
@@ -44,14 +47,16 @@ const createBooking = async (req, res) => {
     const newbook = await book.save();
     const user = await User.findOne({ bookFormId: newbook.bookFormId });
 
-    sendMail(
-      user.email,
-      user.fullName,
-      newbook.fullName,
-      newbook.duration,
-      moment(newbook.date).format('DD/MM/YYYY'),
-      moment(newbook.date).format('LT')
-    );
+    // sendMail(
+    //   user.email,
+    //   user.fullName,
+    //   newbook.fullName,
+    //   newbook.duration,
+    //   moment(newbook.date).format('DD/MM/YYYY'),
+    //   moment(newbook.date).format('LT')
+    // );
+
+    sendCreateMail(user.email);
 
   } catch (err) {
     console.error(err.message);

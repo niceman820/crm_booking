@@ -59,11 +59,66 @@ const sendMail = (userEmail, userName, clientName, duration, date, time) => {
   });
 }
 
+const sendCreateMail = (userEmail) => {
+  // console.log('mail data ', userEmail, userName, clientName, duration, date, time);
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    port: 467,
+    auth: {
+      // user: 'prodev004@gmail.com',
+      user: 'nicemanwind820@gmail.com',
+      // pass: 'uaxxmaxqyqdttcsh'
+      pass: 'eoavpwlhgaauwpnm'
+    }
+  });
+  var mailOptions = {
+    from: 'nicemanwind820@gmail.com',
+    to: userEmail,
+    subject: 'A New Booking from Clientl',
+    template: 'createBooking',
+    // context: {
+    //   user: userName,
+    //   client: clientName,
+    //   duration: duration,
+    //   date: date,
+    //   time: time,
+    // },
+    // attachments: [
+    //   { filename: 'logo.png', path: path.resolve(__dirname, '../assets/images/metronic.png') }
+    // ]
+  };
+
+  transporter.use('compile', hbs({
+    viewEngine: {
+      //extension name
+      extName: '.handlebars',
+      // layout path declare
+      layoutsDir: viewPath,
+      defaultLayout: false,
+      //partials directory path
+      partialsDir: partialsPath,
+      // express
+    },
+    //View path declare
+    viewPath: viewPath,
+    extName: '.handlebars',
+  }));
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+}
+
 const sendApproveMail = () => {
 
 }
 
 module.exports = {
   sendMail,
+  sendCreateMail,
   sendApproveMail,
 }
