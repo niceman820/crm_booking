@@ -1,8 +1,8 @@
 const Book = require('../models/Book');
 const User = require('../models/User');
 const {
-  sendMail,
-  sendCreateMail
+  sendCreateMail,
+  sendApproveMail
 } = require('./mailerController');
 const moment = require('moment');
 
@@ -102,6 +102,8 @@ const approveBooking = async (req, res) => {
       req.params.bookingId,
       { status: 2 }
     );
+
+    
 
     res.send({ message: 'You approved for this booking.' });
   } catch (err) {
