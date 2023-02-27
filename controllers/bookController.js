@@ -2,7 +2,8 @@ const Book = require('../models/Book');
 const User = require('../models/User');
 const {
   sendCreateMail,
-  sendApproveMail
+  sendApproveMail,
+  sendDeclineMail
 } = require('./mailerController');
 const moment = require('moment');
 
@@ -46,15 +47,6 @@ const createBooking = async (req, res) => {
 
     const newbook = await book.save();
     const user = await User.findOne({ bookFormId: newbook.bookFormId });
-
-    // sendMail(
-    //   user.email,
-    //   user.fullName,
-    //   newbook.fullName,
-    //   newbook.duration,
-    //   moment(newbook.date).format('DD/MM/YYYY'),
-    //   moment(newbook.date).format('LT')
-    // );
 
     sendCreateMail(
       user.email,
@@ -126,10 +118,25 @@ const approveBooking = async (req, res) => {
 
 const declineBooking = async (req, res) => {
   try {
-    await Book.findByIdAndUpdate(
-      req.params.bookingId,
+    const bookingId = req.params.bookingId;
+    const user = await User.findById(req.user.id);
+    const book = await Book.findByIdAndUpdate(
+      bookingId,
       { status: 1 }
     );
+    const client_fname = book.client.firstName;
+    const client_lname = book.client.lastName;
+    const client_email = book.client.email;
+    const client_phone = book.client.phone;
+    const booking_date = moment(book.date).format('DD/MM/YYYY');
+    const booking_time = moment(book.date).format('LT');
+    const booking_duration = book.duration;
+
+    let mailSubject = 'Your booking request has been declined!';
+    let mailContent = `Thank you for your booking request. Unfortunately, I will not be able to accomodate you.`;
+
+    sendDeclineMail(client_email, mailSubject, mailContent);
+
     res.send({ message: 'You declined for this booking.' });
   } catch (err) {
     console.error(err.message);
