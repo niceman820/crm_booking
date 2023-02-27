@@ -22,8 +22,9 @@ import BasicInfo from "./createBookingSubs/BasicInfo";
 import AppointmentDetail from "./createBookingSubs/AppointmentDetail";
 import Screening from "./createBookingSubs/Screening";
 import Complete from "./createBookingSubs/Complete";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getBookingFormData } from "../../redux/actions/book";
+import { useState } from "react";
 
 const steps = [
   {
@@ -61,11 +62,19 @@ const ActiveComponent = ({ activeStep, onhandleNext, onhandleBack, length }) => 
 const CreateBookingPage = () => {
   const dispatch = useDispatch();
   const { bookFormId } = useParams();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
+  const [companyLogo, setCompanyLogo] = useState('');
+  // console.log('user logo ', UserLogo)
 
   useEffect(() => {
     dispatch(getBookingFormData(bookFormId));
   }, []);
+
+  const emailNotification = useSelector(state => state.book.emailNotification);
+
+  useEffect(() => {
+    if (emailNotification.companyLogo) setCompanyLogo(emailNotification.companyLogo);
+  },[emailNotification]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -108,7 +117,7 @@ const CreateBookingPage = () => {
         >
           <Grid className="user-logo-title" display='flex' justifyContent='center' sx={{ mt: { md: 12, sm: 6 } }} >
             <Link to='/bookings'>
-              <img alt="Logo" src={UserLogo} height="90" />
+              <img alt="Logo" src={`http://localhost:5000/${emailNotification?.companyLogo}`} height="90" />
             </Link>
           </Grid>
           <Breadcrumbs aria-label="breadcrumb" separator="●" sx={{ mt: 5, color: grey[500], '&:hover': { cursor: 'pointer' } }} >

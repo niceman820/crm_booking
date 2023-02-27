@@ -124,6 +124,8 @@ const approveBooking = async (req, res) => {
     if (approveMessage.includes('{booking_time}')) approveMessage = approveMessage.replace("{booking_time}", moment(book.date).format('LT'));
     if (approveMessage.includes('{booking_duration}')) approveMessage = approveMessage.replace("{booking_duration}", `${book.duration} hours`);
 
+    approveMessage = approveMessage.replace(/\n/g, "<br />");
+
     console.log('--- approve message ---\n ', approveTitle);
     sendApproveMail(book.client.email, approveTitle, approveMessage);
     res.send({ message: 'You approved for this booking.' });
@@ -167,6 +169,8 @@ const declineBooking = async (req, res) => {
     if (declineMessage.includes('{booking_time}')) declineMessage = declineMessage.replace("{booking_time}", moment(book.date).format('LT'));
     if (declineMessage.includes('{booking_duration}')) declineMessage = declineMessage.replace("{booking_duration}", `${book.duration} hours`);
 
+    declineMessage = declineMessage.replace(/\n/g, "<br />");
+
     sendDeclineMail(book.client.email, declineTitle, declineMessage);
     res.send({ message: 'You declined for this booking.' });
   } catch (err) {
@@ -207,20 +211,22 @@ const getNotificaton = async (req, res) => {
 const customBookingForm = async (req, res) => {
   try {
     console.log('custom booking form data', req.body);
-    const {
+    let {
       bookFormId,
       welcomeTitle,
       welcomeMessage,
       thankyouTitle,
       thankyouMessage
     } = req.body;
+
     await BookForm.findOneAndUpdate(
       { bookFormId: bookFormId },
       { $set: {
         'welcomeTitle': welcomeTitle,
         'welcomeMessage': welcomeMessage,
         'thankyouTitle': thankyouTitle,
-        'thankyouMessage': thankyouMessage
+        'thankyouMessage': thankyouMessage,
+        'companyLogo': req.file ? req.file.path : 'uploads/user-logo.png',
       }}
     );
     res.send({message: 'Updated suceesfully'});
@@ -233,7 +239,7 @@ const customBookingForm = async (req, res) => {
 const customEmailNotification = async (req, res) => {
   try {
     console.log('custom booking email notification data', req.body);
-    const {
+    let {
       bookFormId,
       approveTitle,
       approveMessage,
@@ -242,7 +248,8 @@ const customEmailNotification = async (req, res) => {
       declineMessage,
       declineMailStatus
     } = req.body;
-    await BookForm.findOneAndUpdate(
+    
+    const bookForm = await BookForm.findOneAndUpdate(
       { bookFormId: bookFormId },
       {
         $set: {
@@ -255,6 +262,7 @@ const customEmailNotification = async (req, res) => {
         }
       }
     );
+
     res.send({message: 'Updated suceesfully'});
   } catch (err) {
     console.error(err.message);
