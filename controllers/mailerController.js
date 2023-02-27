@@ -114,16 +114,9 @@ const sendCreateMail = (userEmail, userName, clientName, duration, date, time) =
 }
 
 const sendApproveMail = (
-  userEmail,
-  userName,
-  client_firstName,
-  client_lastName,
   client_email,
-  client_avatar,
-  client_phone,
-  booking_date,
-  booking_time,
-  booking_duration
+  mailSubject,
+  mailConent
 ) => {
   // console.log('mail data ', userEmail, userName, clientName, duration, date, time);
   var transporter = nodemailer.createTransport({
@@ -138,19 +131,11 @@ const sendApproveMail = (
   });
   var mailOptions = {
     from: 'nicemanwind820@gmail.com',
-    to: userEmail,
-    subject: 'Your booking request has been approved!',
+    to: client_email,
+    subject: mailSubject,
     template: 'approveBooking',
     context: {
-      userName,
-      client_firstName,
-      client_lastName,
-      client_email,
-      client_avatar,
-      client_phone,
-      booking_date,
-      booking_time,
-      booking_duration
+      mailConent
     },
     // attachments: [
     //   { filename: 'logo.png', path: path.resolve(__dirname, '../assets/images/metronic.png') }

@@ -98,13 +98,25 @@ const getBookingDetailData = async (req, res) => {
 
 const approveBooking = async (req, res) => {
   try {
-    await Book.findByIdAndUpdate(
-      req.params.bookingId,
+    const bookingId = req.params.bookingId;
+    const user = await User.findById(req.user.id);
+    const book = await Book.findByIdAndUpdate(
+      bookingId,
       { status: 2 }
     );
+    const client_fname = book.client.firstName;
+    const client_lname = book.client.lastName;
+    const client_email = book.client.email;
+    const client_phone = book.client.phone;
+    const booking_date = moment(book.date).format('DD/MM/YYYY');
+    const booking_time = moment(book.date).format('LT');
+    const booking_duration = book.duration;
 
+    let mailSubject = 'Your booking request has been approved!';
+    let mailContent = `Dear ${client_fname},<br>Thank you for your booking. Your appointment has been approved and confirmed!<br>I look forward to seeing you on ${booking_date} at ${booking_time}.<br>Thank you and see you soon!<br>${user.firstName}`;
     
-
+    sendApproveMail(client_email, mailSubject, mailContent);
+  
     res.send({ message: 'You approved for this booking.' });
   } catch (err) {
     console.error(err.message);

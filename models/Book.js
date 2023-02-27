@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 
 const BookSchema = new Schema({
   bookFormId: {
-    type: String
+    type: String,
+    unique: true
   },
   client: {
     firstName: {

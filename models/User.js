@@ -26,7 +26,8 @@ const UserSchema = new mongoose.Schema({
     default: 'client'
   },
   bookFormId: {
-    type: String
+    type: String,
+    unique: true
   },
   createdAt: {
     type: Date,
