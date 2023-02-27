@@ -124,23 +124,8 @@ const approveBooking = async (req, res) => {
     if (approveMessage.includes('{booking_time}')) approveMessage = approveMessage.replace("{booking_time}", moment(book.date).format('LT'));
     if (approveMessage.includes('{booking_duration}')) approveMessage = approveMessage.replace("{booking_time}", book.duration);
 
-
     console.log('--- approve message ---\n ', approveTitle);
-
-
-    const client_fname = book.client.firstName;
-    const client_lname = book.client.lastName;
-    const client_email = book.client.email;
-    const client_phone = book.client.phone;
-    const booking_date = moment(book.date).format('DD/MM/YYYY');
-    const booking_time = moment(book.date).format('LT');
-    const booking_duration = book.duration;
-
-    // let mailSubject = 'Your booking request has been approved!';
-    // let mailContent = `Dear ${client_fname}.<br/>Thank you for your booking. Your appointment has been approved and confirmed!<br/>I look forward to seeing you on ${booking_date} at ${booking_time}.<br/>Thank you and see you soon!<br/>${user.firstName}`;
-    // let mailContent = 'Nice to see you, Michael';
     sendApproveMail(book.client.email, approveTitle, approveMessage);
-  
     res.send({ message: 'You approved for this booking.' });
   } catch (err) {
     console.error(err.message);
@@ -156,19 +141,33 @@ const declineBooking = async (req, res) => {
       bookingId,
       { status: 1 }
     );
-    const client_fname = book.client.firstName;
-    const client_lname = book.client.lastName;
-    const client_email = book.client.email;
-    const client_phone = book.client.phone;
-    const booking_date = moment(book.date).format('DD/MM/YYYY');
-    const booking_time = moment(book.date).format('LT');
-    const booking_duration = book.duration;
+    const bookForm = await BookForm.findOne({ bookFormId: book.bookFormId });
+    let {
+      declineMailStatus,
+      declineTitle,
+      declineMessage
+    } = bookForm;
+    
+    // console.log('updated book ', declineMailStatus, declineTitle, declineMessage);
+    if (!declineMailStatus) return res.send({ message: 'You declined for this booking.' });
 
-    let mailSubject = 'Your booking request has been declined!';
-    let mailContent = `Thank you for your booking request. Unfortunately, I will not be able to accomodate you.`;
+    if (declineTitle.includes('{client_fname}')) declineTitle = declineTitle.replace("{client_fname}", book.client.firstName);
+    if (declineTitle.includes('{client_lname}')) declineTitle = declineTitle.replace("{client_lname}", book.client.lastName);
+    if (declineTitle.includes('{client_email}')) declineTitle = declineTitle.replace("{client_email}", book.client.email);
+    if (declineTitle.includes('{client_phone}')) declineTitle = declineTitle.replace("{client_phone}", book.client.phone);
+    if (declineTitle.includes('{booking_date}')) declineTitle = declineTitle.replace("{booking_date}", moment(book.date).format('DD/MM/YYYY'));
+    if (declineTitle.includes('{booking_time}')) declineTitle = declineTitle.replace("{booking_time}", moment(book.date).format('LT'));
+    if (declineTitle.includes('{booking_duration}')) declineTitle = declineTitle.replace("{booking_time}", book.duration);
 
-    sendDeclineMail(client_email, mailSubject, mailContent);
+    if (declineMessage.includes('{client_fname}')) declineMessage = declineMessage.replace("{client_fname}", book.client.firstName);
+    if (declineMessage.includes('{client_lname}')) declineMessage = declineMessage.replace("{client_lname}", book.client.lastName);
+    if (declineMessage.includes('{client_email}')) declineMessage = declineMessage.replace("{client_email}", book.client.email);
+    if (declineMessage.includes('{client_phone}')) declineMessage = declineMessage.replace("{client_phone}", book.client.phone);
+    if (declineMessage.includes('{booking_date}')) declineMessage = declineMessage.replace("{booking_date}", moment(book.date).format('DD/MM/YYYY'));
+    if (declineMessage.includes('{booking_time}')) declineMessage = declineMessage.replace("{booking_time}", moment(book.date).format('LT'));
+    if (declineMessage.includes('{booking_duration}')) declineMessage = declineMessage.replace("{booking_time}", book.duration);
 
+    sendDeclineMail(book.client.email, declineTitle, declineMessage);
     res.send({ message: 'You declined for this booking.' });
   } catch (err) {
     console.error(err.message);
