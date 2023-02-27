@@ -113,8 +113,8 @@ const approveBooking = async (req, res) => {
     const booking_duration = book.duration;
 
     let mailSubject = 'Your booking request has been approved!';
-    let mailContent = `Dear ${client_fname},<br>Thank you for your booking. Your appointment has been approved and confirmed!<br>I look forward to seeing you on ${booking_date} at ${booking_time}.<br>Thank you and see you soon!<br>${user.firstName}`;
-    
+    let mailContent = `Dear ${client_fname}.<br/>Thank you for your booking. Your appointment has been approved and confirmed!<br/>I look forward to seeing you on ${booking_date} at ${booking_time}.<br/>Thank you and see you soon!<br/>${user.firstName}`;
+    // let mailContent = 'Nice to see you, Michael';
     sendApproveMail(client_email, mailSubject, mailContent);
   
     res.send({ message: 'You approved for this booking.' });

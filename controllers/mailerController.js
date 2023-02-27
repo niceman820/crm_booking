@@ -116,9 +116,9 @@ const sendCreateMail = (userEmail, userName, clientName, duration, date, time) =
 const sendApproveMail = (
   client_email,
   mailSubject,
-  mailConent
+  mailContent
 ) => {
-  // console.log('mail data ', userEmail, userName, clientName, duration, date, time);
+  console.log('mail data ', client_email, mailSubject, mailContent);
   var transporter = nodemailer.createTransport({
     service: 'gmail',
     port: 467,
@@ -135,7 +135,7 @@ const sendApproveMail = (
     subject: mailSubject,
     template: 'approveBooking',
     context: {
-      mailConent
+      mailContent: mailContent
     },
     // attachments: [
     //   { filename: 'logo.png', path: path.resolve(__dirname, '../assets/images/metronic.png') }
