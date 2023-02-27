@@ -10,8 +10,16 @@ const BookFormSchema = new Schema({
     type: Boolean,
     default: true
   },
+  approveTitle: {
+    type: String,
+    default: 'Your booking request has been approved!'
+  },
   approveMessage: {
     type: String
+  },
+  declineTitle: {
+    type: String,
+    default: 'Your booking request has been declined.'
   },
   declineMailStatus: {
     type: Boolean,
@@ -20,14 +28,23 @@ const BookFormSchema = new Schema({
   declineMessage: {
     type: String
   },
+  welcomeTitle: {
+    type: String,
+    default: 'Welcome'
+  },
   welcomeMessage: {
     type: String
+  },
+  thankyouTitle: {
+    type: String,
+    default: 'Thank you!'
   },
   thankyouMessage: {
     type: String
   },
   companyLogo: {
-    type: String
+    type: String,
+    default: 'assets/images/user-logo.png'
   },
 }, {
   toObject: { virtuals: true },

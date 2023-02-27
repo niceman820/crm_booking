@@ -14,7 +14,7 @@ const MainRouter = () => {
     <Routes>
       <Route path='login' element={isAuthenticated ? <Navigate to="/" /> : <LoginPage />} />
       <Route path='signup' element={isAuthenticated ? <Navigate to="/" /> : <SignupPage />} />
-      <Route path='bookings/new-booking' element={<CreateBookingPage />} />
+      <Route path='/new-booking/:bookFormId/:userName' element={<CreateBookingPage />} />
       
       <Route path='*' element={isAuthenticated ? <MainLayoutRouter /> : <LoginPage /> } />
     </Routes>

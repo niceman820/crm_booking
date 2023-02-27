@@ -16,6 +16,7 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { BOOKING_TYPE } from "../../../redux/types";
+import { useParams } from "react-router-dom";
 
 const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
   const dispatch = useDispatch();
@@ -32,11 +33,11 @@ const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
     }),
   );
 
-  const { bookFormId } = useSelector(state => ({
-    bookFormId: state.auth.user.bookFormId
-  }))
-
-  console.log(' book ', bookFormId);
+  const { bookFormId } = useParams();
+  const { welcomeTitle, welcomeMessage } = useSelector(state => ({
+    welcomeTitle: state.book.emailNotification.welcomeTitle,
+    welcomeMessage: state.book.emailNotification.welcomeMessage
+  }));
 
   function MyFormControlLabel(props) {
     const radioGroup = useRadioGroup();
@@ -72,8 +73,8 @@ const BookingType = ({ activeStep, onhandleNext, onhandleBack, length }) => {
     >
       <Container sx={{ maxWidth: { sm: '650px' } }}>
         <Grid>
-          <Typography sx={{ fontSize: '1.2rem', fontWeight: 600 }}>Welcome</Typography>
-          <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, mt: 1 }}>I appreciate you connecting with me. To ensure your booking is accepted, please be sure to fill in this booking form in its entirety. - Ava</Typography>
+          <Typography sx={{ fontSize: '1.2rem', fontWeight: 600 }}>{welcomeTitle}</Typography>
+          <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, mt: 1 }}>{welcomeMessage}</Typography>
         </Grid>
         <Grid sx={{ mt: 7.5 }}>
           <Typography sx={{ fontSize: '1.2rem', fontWeight: 600 }}>Booking Type</Typography>

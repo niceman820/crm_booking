@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ScrollToTop from "react-scroll-to-top";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -26,16 +26,79 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import ShutterSpeedIcon from '@mui/icons-material/ShutterSpeed';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { useDispatch, useSelector } from "react-redux";
+import { customEmailNotification, getBookingFormData } from "../../redux/actions/book";
+
+const vairableList = [
+  { name: '{client_fname}', description: 'Client\'s first name.', icon: <Avatar color="primary" aria-label="recipe"> T </Avatar> },
+  { name: '{client_lname}', description: 'Client\'s last name.', icon: <Avatar color="primary" aria-label="recipe"> T </Avatar> },
+  { name: '{client_email}', description: 'Client email provided.', icon: <DraftsIcon sx={{ fontSize: '2.5rem', color: '#FFC700' }} /> },
+  { name: '{client_phone}', description: 'Phone number provided.', icon: <PermPhoneMsgIcon sx={{ fontSize: '2.5rem', color: '#FFC700' }} /> },
+  { name: '{booking_date}', description: 'Date of booking.', icon: <CalendarMonthIcon sx={{ fontSize: '2.5rem', color: '#F1416C' }} /> },
+  { name: '{booking_time}', description: 'Time of booking.', icon: <AccessAlarmIcon sx={{ fontSize: '2.5rem', color: '#F1416C' }} /> },
+  { name: '{booking_duration}', description: 'Duration of booking.', icon: <ShutterSpeedIcon sx={{ fontSize: '2.5rem', color: '#50CD89' }} /> },
+];
 
 const EditNotificationPage = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const [approvedTitle, setApprovedTitle] = useState('Your booking request has been approved!');
-  const [approvedMessage, setApprovedMessage] = useState('Dear {client_fname},\n\nThank you for your booking. Your appointment has been approved and confirmed!\n\nI look forward to seeing you on {booking_date} at {booking_time}.\n\nThank you and see you soon!\n\nAva');
-  const [declinedTitle, setDeclinedTitle] = useState('Your booking request has been declined');
-  const [declinedMessage, setDeclinedMessage] = useState('Thank you for your booking request. Unfortunately, I will not be able to accomodate you.');
-  const handleOpen = () => setOpen(true);
+
+  const { emailNotification, user } = useSelector(state => ({
+    emailNotification: state.book.emailNotification,
+    user: state.auth.user
+  }));
+
+
+  useEffect(() => {
+    dispatch(getBookingFormData(user?.bookFormId));
+  }, []);
+
+
+  const [approvedTitle, setApprovedTitle] = useState("");
+  const [approvedMessage, setApprovedMessage] = useState("");
+  const [declinedTitle, setDeclinedTitle] = useState('');
+  const [declinedMessage, setDeclinedMessage] = useState('');
+  const [approvedStatus, setApprovedStatus] = useState(false);
+  const [declinedStatus, setDeclinedStatus] = useState(false);
+
+
+  useEffect(() => {
+    if (emailNotification.approveTitle) {
+      setApprovedTitle(emailNotification.approveTitle);
+      setApprovedMessage(emailNotification.approveMessage);
+      setApprovedStatus(emailNotification.approveMailStatus);
+      setDeclinedTitle(emailNotification.declineTitle);
+      setDeclinedMessage(emailNotification.declineMessage);
+      setDeclinedStatus(emailNotification.declineMailStatus);
+    }
+  }, [emailNotification]);
+
+  const handleOpen = () => {
+    let data = {
+      bookFormId: emailNotification.bookFormId,
+      approveTitle: approvedTitle,
+      approveMessage: approvedMessage,
+      approveMailStatus: approvedStatus,
+      declineTitle: declinedTitle,
+      declineMessage: declinedMessage,
+      declineMailStatus: declinedStatus
+    }
+    dispatch(customEmailNotification(data));
+    setOpen(true);
+  }
   const handleClose = () => setOpen(false);
+
+  const handleChangeTitle = (e) => {
+    setApprovedTitle(e.target.value)
+  }
+
+  const handleChangeMessage = (e) => {
+    setApprovedMessage(e.target.value)
+  }
+
+
+
   return (
     <Container maxWidth="lg">
       <Grid
@@ -87,7 +150,7 @@ const EditNotificationPage = () => {
                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                     <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, width: 200 }} >Enable?</TableCell>
                     <TableCell align="left" sx={{ paddingX: 0 }} >
-                      <Switch defaultChecked />
+                      <Switch checked={approvedStatus} onChange={e => setApprovedStatus(e.target.checked)} />
                     </TableCell>
                   </TableRow>
                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
@@ -98,7 +161,7 @@ const EditNotificationPage = () => {
                         fullWidth
                         sx={{ mt: 1 }}
                         value={approvedTitle}
-                        onChange={(e) => setApprovedTitle(e.target.value)}
+                        onChange={handleChangeTitle}
                         InputProps={{
                           disableUnderline: true,
                           style: {
@@ -121,7 +184,7 @@ const EditNotificationPage = () => {
                         multiline
                         rows={8}
                         value={approvedMessage}
-                        onChange={(e) => setApprovedMessage(e.target.value)}
+                        onChange={handleChangeMessage}
                         InputProps={{
                           disableUnderline: true,
                           style: {
@@ -153,7 +216,7 @@ const EditNotificationPage = () => {
                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                     <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, width: 200 }} >Enable?</TableCell>
                     <TableCell align="left" sx={{ paddingX: 0 }} >
-                      <Switch defaultChecked />
+                      <Switch checked={declinedStatus} onChange={e => setDeclinedStatus(e.target.checked)} />
                     </TableCell>
                   </TableRow>
                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
@@ -229,115 +292,22 @@ const EditNotificationPage = () => {
               <Typography sx={{ fontSize: '0.8rem', mt: 0.5, opacity: 0.8, fontWeight: 600 }}>You can personalize your email further by adding these variables to your message. Simply include the tag in your message, and it will display that particular value.</Typography>
             </Grid>
             <Divider sx={{ mt: 3 }} />
-            <CardHeader
-              avatar={
-                <Avatar color="primary" aria-label="recipe">
-                  T
-                </Avatar>
-              }
-              title="{client_fname}"
-              titleTypographyProps={{ fontSize: '1rem', fontWeight: 600 }}
-              subheader="Client's first name."
-              subheaderTypographyProps={{ fontWeight: 600, color: '#A1A5B7' }}
-              sx={{
-                border: '1px',
-                borderStyle: 'dashed',
-                borderColor: '#E4E6EF',
-                mt: 2
-              }}
-            />
-            <CardHeader
-              avatar={
-                <Avatar color="primary" aria-label="recipe">
-                  T
-                </Avatar>
-              }
-              title="{client_lname}"
-              titleTypographyProps={{ fontSize: '1rem', fontWeight: 600 }}
-              subheader="Client's last name."
-              subheaderTypographyProps={{ fontWeight: 600, color: '#A1A5B7' }}
-              sx={{
-                border: '1px',
-                borderStyle: 'dashed',
-                borderColor: '#E4E6EF',
-                mt: 2
-              }}
-            />
-            <CardHeader
-              avatar={
-                <DraftsIcon sx={{ fontSize: '2.5rem', color: '#FFC700' }} />
-              }
-              title="{client_email}"
-              titleTypographyProps={{ fontSize: '1rem', fontWeight: 600 }}
-              subheader="Client email provided."
-              subheaderTypographyProps={{ fontWeight: 600, color: '#A1A5B7' }}
-              sx={{
-                border: '1px',
-                borderStyle: 'dashed',
-                borderColor: '#E4E6EF',
-                mt: 2
-              }}
-            />
-            <CardHeader
-              avatar={
-                <PermPhoneMsgIcon sx={{ fontSize: '2.5rem', color: '#FFC700' }} />
-              }
-              title="{client_phone}"
-              titleTypographyProps={{ fontSize: '1rem', fontWeight: 600 }}
-              subheader="Phone number provided."
-              subheaderTypographyProps={{ fontWeight: 600, color: '#A1A5B7' }}
-              sx={{
-                border: '1px',
-                borderStyle: 'dashed',
-                borderColor: '#E4E6EF',
-                mt: 2
-              }}
-            />
-            <CardHeader
-              avatar={
-                <CalendarMonthIcon sx={{ fontSize: '2.5rem', color: '#F1416C' }} />
-              }
-              title="{booking_date}"
-              titleTypographyProps={{ fontSize: '1rem', fontWeight: 600 }}
-              subheader="Date of the booking."
-              subheaderTypographyProps={{ fontWeight: 600, color: '#A1A5B7' }}
-              sx={{
-                border: '1px',
-                borderStyle: 'dashed',
-                borderColor: '#E4E6EF',
-                mt: 2
-              }}
-            />
-            <CardHeader
-              avatar={
-                <AccessAlarmIcon sx={{ fontSize: '2.5rem', color: '#F1416C' }} />
-              }
-              title="{booking_time}"
-              titleTypographyProps={{ fontSize: '1rem', fontWeight: 600 }}
-              subheader="Time of the booking."
-              subheaderTypographyProps={{ fontWeight: 600, color: '#A1A5B7' }}
-              sx={{
-                border: '1px',
-                borderStyle: 'dashed',
-                borderColor: '#E4E6EF',
-                mt: 2
-              }}
-            />
-            <CardHeader
-              avatar={
-                <ShutterSpeedIcon sx={{ fontSize: '2.5rem', color: '#50CD89' }} />
-              }
-              title="{booking_duration}"
-              titleTypographyProps={{ fontSize: '1rem', fontWeight: 600 }}
-              subheader="Duration of the booking."
-              subheaderTypographyProps={{ fontWeight: 600, color: '#A1A5B7' }}
-              sx={{
-                border: '1px',
-                borderStyle: 'dashed',
-                borderColor: '#E4E6EF',
-                mt: 2
-              }}
-            />
+            {vairableList.map((variable, index) =>
+              <CardHeader
+                key={index}
+                avatar={ variable.icon }
+                title={ variable.name }
+                subheader={ variable.description }
+                titleTypographyProps={{ fontSize: '1rem', fontWeight: 600 }}
+                subheaderTypographyProps={{ fontWeight: 600, color: '#A1A5B7' }}
+                sx={{
+                  border: '1px',
+                  borderStyle: 'dashed',
+                  borderColor: '#E4E6EF',
+                  mt: 2
+                }}
+              />
+            )}
           </Container>
         </Grid>
       </Grid>

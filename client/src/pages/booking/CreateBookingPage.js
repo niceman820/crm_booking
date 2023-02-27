@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -22,6 +22,8 @@ import BasicInfo from "./createBookingSubs/BasicInfo";
 import AppointmentDetail from "./createBookingSubs/AppointmentDetail";
 import Screening from "./createBookingSubs/Screening";
 import Complete from "./createBookingSubs/Complete";
+import { useDispatch } from "react-redux";
+import { getBookingFormData } from "../../redux/actions/book";
 
 const steps = [
   {
@@ -57,7 +59,13 @@ const ActiveComponent = ({ activeStep, onhandleNext, onhandleBack, length }) => 
 }
 
 const CreateBookingPage = () => {
+  const dispatch = useDispatch();
+  const { bookFormId } = useParams();
   const [activeStep, setActiveStep] = React.useState(0);
+
+  useEffect(() => {
+    dispatch(getBookingFormData(bookFormId));
+  }, []);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

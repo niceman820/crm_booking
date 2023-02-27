@@ -10,9 +10,15 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { useSelector } from "react-redux";
 
 const Complete = ({ activeStep, onhandleBack }) => {
   const theme = useTheme();
+  const { thankyouTitle, thankyouMessage } = useSelector(state => ({
+    thankyouTitle: state.book.emailNotification.thankyouTitle,
+    thankyouMessage: state.book.emailNotification.thankyouMessage
+  }));
+
   return (
     <Grid
       item
@@ -23,8 +29,8 @@ const Complete = ({ activeStep, onhandleBack }) => {
     >
       <Container sx={{ maxWidth: { md: '650px' } }}>
         <Grid>
-          <Typography sx={{ fontSize: '1.2rem', fontWeight: 600 }}>Thank you for your booking!</Typography>
-          <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, mt: 1 }}>I appreciate you taking the time to fill out my booking form. I will be in touch very shortly!</Typography>
+          <Typography sx={{ fontSize: '1.2rem', fontWeight: 600 }}>{thankyouTitle}</Typography>
+          <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, mt: 1 }}>{thankyouMessage}</Typography>
         </Grid>
         <Stack direction='row' sx={{ backgroundColor: theme.palette.mode === 'light' && '#E8FFF3', paddingY: '1rem', borderRadius: '0.5rem', border: '1px dashed #50cd89', mt: 3 }} >
           <Grid item>

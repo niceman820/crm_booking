@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ScrollToTop from "react-scroll-to-top";
 import { FileUploader } from "react-drag-drop-files";
 import { useTheme } from '@mui/material/styles';
@@ -23,21 +23,58 @@ import {
 
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { useDispatch, useSelector } from "react-redux";
+import { customBookingForm, getBookingFormData } from "../../redux/actions/book";
 
 const CustomizeFormPage = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector(state => ({
+    user: state.auth.user
+  }));
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
+
+  useEffect(() => {
+    dispatch(getBookingFormData(user?.bookFormId));
+  }, []);
+
+  const emailNotification = useSelector(state => state.book.emailNotification);
+
   const [fileUploadError, setFileUploadError] = useState('');
+  const [welcomeTitle, setWelcomeTitle] = useState('');
+  const [welcomeMessage, setWelcomeMessage] = useState(``);
+  const [thankyouTitle, setThankyouTitle] = useState('');
+  const [thankyouMessage, setThankyouMessage] = useState(``);
 
   const fileTypes = ["JPEG", "PNG", "GIF"];
 
-  const handleChange = (file) => {
+  useEffect(() => {
+    if(emailNotification.welcomeTitle) {
+      setWelcomeTitle(emailNotification.welcomeTitle);
+      setWelcomeMessage(emailNotification.welcomeMessage);
+      setThankyouTitle(emailNotification.thankyouTitle);
+      setThankyouMessage(emailNotification.thankyouMessage);
+    }
+  }, [emailNotification]);
+
+  const handleChange = (files) => {
     setFileUploadError('');
-    console.log('file ', file)
+    setFile(files[0]);
+    // console.log('files ', files)
   };
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    let formData = new FormData();
+    formData.append('bookFormId',emailNotification.bookFormId); 
+    formData.append('userLogo', file);
+    formData.append('welcomeTitle', welcomeTitle);
+    formData.append('welcomeMessage', welcomeMessage);
+    formData.append('thankyouTitle', thankyouTitle);
+    formData.append('thankyouMessage', thankyouMessage);
+    dispatch(customBookingForm(formData));
+    setOpen(true);
+  }
 
   const handleClose = () => setOpen(false);
   return (
@@ -95,7 +132,8 @@ const CustomizeFormPage = () => {
                         variant="standard"
                         fullWidth
                         sx={{ mt: 1 }}
-                        value={'Welcome'}
+                        value={welcomeTitle}
+                        onChange={e => setWelcomeTitle(e.target.value)}
                         InputProps={{
                           disableUnderline: true,
                           style: {
@@ -117,7 +155,8 @@ const CustomizeFormPage = () => {
                         sx={{ mt: 1 }}
                         multiline
                         rows={8}
-                        value={'I appreciate you connecting with me. To ensure your booking is accepted, please be sure to fill in this booking form in its entirety. - Ava'}
+                        value={welcomeMessage}
+                        onChange={e => setWelcomeMessage(e.target.value)}
                         InputProps={{
                           disableUnderline: true,
                           style: {
@@ -153,7 +192,8 @@ const CustomizeFormPage = () => {
                         variant="standard"
                         fullWidth
                         sx={{ mt: 1 }}
-                        value={'Thank you!'}
+                        value={thankyouTitle}
+                        onChange={e => setThankyouTitle(e.target.value)}
                         InputProps={{
                           disableUnderline: true,
                           style: {
@@ -175,7 +215,8 @@ const CustomizeFormPage = () => {
                         sx={{ mt: 1 }}
                         multiline
                         rows={8}
-                        value={'Thank you for your booking. I have received your request and will get back to you shortly!'}
+                        value={thankyouMessage}
+                        onChange={e => setThankyouMessage(e.target.value)}
                         InputProps={{
                           disableUnderline: true,
                           style: {

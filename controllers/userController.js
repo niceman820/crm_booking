@@ -1,5 +1,6 @@
 
 const User = require('../models/User');
+const BookForm = require('../models/BookForm');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -105,6 +106,15 @@ const signUp = async (req, res) => {
 		user.password = await bcrypt.hash(password, salt);
 
 		await user.save();
+		let bookForm = new BookForm({
+			bookFormId: bookFormId,
+			approveMessage: `Dear {client_fname},\n\nThank you for your booking. Your appointment has been approved and confirmed!\n\nI look forward to seeing you on {booking_date} at {booking_time}.\n\nThank you and see you soon!\n\n${firstName}`,
+			declineMessage: `Thank you for your booking request. Unfortunately, I will not be able to accomodate you.`,
+			welcomeMessage: `I appreciate you connecting with me. To ensure your booking is accepted, please be sure to fill in this booking form in its entirety. - ${firstName}`,
+			thankyouMessage: `Thank you for your booking. I have received your request and will get back to you shortly!`,
+		});
+
+		await bookForm.save();
 
 		const payload = {
 			user: {

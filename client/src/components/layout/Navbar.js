@@ -60,37 +60,7 @@ const useStyles = makeStyles({
   },
 });
 
-const pagesList = [
-  {
-    page: { title: 'Dashboard', href: '/bookings' },
-    subpages: [],
-    typeMenu: ''
-  },
-  {
-    page: { title: 'My Bookings', href: '' },
-    subpages: [
-      { title: 'View All Bookings', href: '/bookings', icon: <MailIcon /> },
-      { title: 'Edit Notifications', href: '/bookings/edit-notifications', icon: <MailIcon /> },
-      { title: 'Create Booking', href: '/bookings/new-booking', icon: <NoteAddIcon /> }
-    ],
-    typeMenu: MY_BOOKING_MENU
-  },
-  {
-    page: { title: 'Booking Form', href: '' },
-    subpages: [
-      { title: 'Customize Form', href: '/bookings/customize-form', icon: <FlareIcon /> },
-      { title: 'Get Embed Code', href: '/bookings/embed', icon: <DynamicFormIcon /> },
-    ],
-    typeMenu: BOOKING_FORM
-  },
-];
 
-const subscriptionPages = [
-  { title: 'Referrals', href: '' },
-  { title: 'Billing', href: '' },
-  { title: 'Payments', href: '' },
-  { title: 'Statements', href: '' }
-];
 
 function Navbar() {
   const theme = useTheme();
@@ -109,6 +79,38 @@ function Navbar() {
   const { user } = useSelector(state => ({
     user: state.auth.user
   }));
+
+  const pagesList = [
+    {
+      page: { title: 'Dashboard', href: '/bookings' },
+      subpages: [],
+      typeMenu: ''
+    },
+    {
+      page: { title: 'My Bookings', href: '' },
+      subpages: [
+        { title: 'View All Bookings', href: '/bookings', icon: <MailIcon /> },
+        { title: 'Edit Notifications', href: '/bookings/edit-notifications', icon: <MailIcon /> },
+        { title: 'Preview Booking', href: `/new-booking/${user?.bookFormId}/${user?.firstName}-${user?.lastName}`, icon: <NoteAddIcon /> }
+      ],
+      typeMenu: MY_BOOKING_MENU
+    },
+    {
+      page: { title: 'Booking Form', href: '' },
+      subpages: [
+        { title: 'Customize Form', href: '/bookings/customize-form', icon: <FlareIcon /> },
+        { title: 'Get Embed Code', href: '/bookings/embed', icon: <DynamicFormIcon /> },
+      ],
+      typeMenu: BOOKING_FORM
+    },
+  ];
+  
+  const subscriptionPages = [
+    { title: 'Referrals', href: '' },
+    { title: 'Billing', href: '' },
+    { title: 'Payments', href: '' },
+    { title: 'Statements', href: '' }
+  ];
 
   const styles = useStyles();
   let currentlyHovering = false;

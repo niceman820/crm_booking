@@ -7,7 +7,10 @@ const {
   getBookingDetailData,
   approveBooking,
   declineBooking,
-  deleteBookings
+  deleteBookings,
+  getNotificaton,
+  customBookingForm,
+  customEmailNotification
 } = require('../../controllers/bookController');
 const multer  = require('multer');
 const auth = require('../../middleware/auth');
@@ -64,5 +67,26 @@ router.put('/detail/:bookingId', auth, approveBooking);
 // @desc     decline booking by user
 // @access   Private
 router.patch('/detail/:bookingId', auth, declineBooking);
+
+
+// @route    GET api/booking/custom-notification
+// @desc     get bookinf form email notification
+// @access   Public
+router.get('/custom-notification/:bookFormId', getNotificaton);
+
+// @route    POST api/booking/custom-notification
+// @desc     Update create bookinf form
+// @access   Private
+router.post(
+  '/custom-booking', 
+  auth, 
+  upload.single('userLogo'),
+  customBookingForm
+  );
+
+// @route    POST api/booking/custom-email-notification
+// @desc     Update booking form email notification
+// @access   Private
+router.post('/custom-email-notification', auth, customEmailNotification);
 
 module.exports = router;

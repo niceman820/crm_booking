@@ -123,9 +123,8 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
     formData.append('ref1', data.ref1);
     formData.append('ref2', data.ref2);
     formData.append('initialData', JSON.stringify(bookingData));
-    // onhandleNext();
     dispatch(createBooking(formData));
-
+    onhandleNext();
   };
 
   return (

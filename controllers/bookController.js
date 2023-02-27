@@ -1,5 +1,6 @@
 const Book = require('../models/Book');
 const User = require('../models/User');
+const BookForm = require('../models/BookForm');
 const {
   sendCreateMail,
   sendApproveMail,
@@ -8,9 +9,9 @@ const {
 const moment = require('moment');
 
 const createBooking = async (req, res) => {
+  console.log('create booking ', req.body)
   const initialData = JSON.parse(req.body.initialData);
   try {
-    console.log('initialData ', initialData.client.preferredCommuncation.email)
     const {
       screenMethod,
       ref1,
@@ -96,6 +97,37 @@ const approveBooking = async (req, res) => {
       bookingId,
       { status: 2 }
     );
+        
+    const bookForm = await BookForm.findOne({ bookFormId: book.bookFormId });
+    let {
+      approveMailStatus,
+      approveTitle,
+      approveMessage
+    } = bookForm;
+    
+    // console.log('updated book ', approveMailStatus, approveTitle, approveMessage);
+    if (!approveMailStatus) return res.send({ message: 'You approved for this booking.' });
+
+    if (approveTitle.includes('{client_fname}')) approveTitle = approveTitle.replace("{client_fname}", book.client.firstName);
+    if (approveTitle.includes('{client_lname}')) approveTitle = approveTitle.replace("{client_lname}", book.client.lastName);
+    if (approveTitle.includes('{client_email}')) approveTitle = approveTitle.replace("{client_email}", book.client.email);
+    if (approveTitle.includes('{client_phone}')) approveTitle = approveTitle.replace("{client_phone}", book.client.phone);
+    if (approveTitle.includes('{booking_date}')) approveTitle = approveTitle.replace("{booking_date}", moment(book.date).format('DD/MM/YYYY'));
+    if (approveTitle.includes('{booking_time}')) approveTitle = approveTitle.replace("{booking_time}", moment(book.date).format('LT'));
+    if (approveTitle.includes('{booking_duration}')) approveTitle = approveTitle.replace("{booking_time}", book.duration);
+
+    if (approveMessage.includes('{client_fname}')) approveMessage = approveMessage.replace("{client_fname}", book.client.firstName);
+    if (approveMessage.includes('{client_lname}')) approveMessage = approveMessage.replace("{client_lname}", book.client.lastName);
+    if (approveMessage.includes('{client_email}')) approveMessage = approveMessage.replace("{client_email}", book.client.email);
+    if (approveMessage.includes('{client_phone}')) approveMessage = approveMessage.replace("{client_phone}", book.client.phone);
+    if (approveMessage.includes('{booking_date}')) approveMessage = approveMessage.replace("{booking_date}", moment(book.date).format('DD/MM/YYYY'));
+    if (approveMessage.includes('{booking_time}')) approveMessage = approveMessage.replace("{booking_time}", moment(book.date).format('LT'));
+    if (approveMessage.includes('{booking_duration}')) approveMessage = approveMessage.replace("{booking_time}", book.duration);
+
+
+    console.log('--- approve message ---\n ', approveTitle);
+
+
     const client_fname = book.client.firstName;
     const client_lname = book.client.lastName;
     const client_email = book.client.email;
@@ -104,10 +136,10 @@ const approveBooking = async (req, res) => {
     const booking_time = moment(book.date).format('LT');
     const booking_duration = book.duration;
 
-    let mailSubject = 'Your booking request has been approved!';
-    let mailContent = `Dear ${client_fname}.<br/>Thank you for your booking. Your appointment has been approved and confirmed!<br/>I look forward to seeing you on ${booking_date} at ${booking_time}.<br/>Thank you and see you soon!<br/>${user.firstName}`;
+    // let mailSubject = 'Your booking request has been approved!';
+    // let mailContent = `Dear ${client_fname}.<br/>Thank you for your booking. Your appointment has been approved and confirmed!<br/>I look forward to seeing you on ${booking_date} at ${booking_time}.<br/>Thank you and see you soon!<br/>${user.firstName}`;
     // let mailContent = 'Nice to see you, Michael';
-    sendApproveMail(client_email, mailSubject, mailContent);
+    sendApproveMail(book.client.email, approveTitle, approveMessage);
   
     res.send({ message: 'You approved for this booking.' });
   } catch (err) {
@@ -161,6 +193,76 @@ const deleteBookings = async (req, res) => {
   }
 }
 
+const getNotificaton = async (req, res) => {
+  try {
+    const {bookFormId} = req.params;
+    console.log('bookformId ', bookFormId);
+    const bookForm = await BookForm.findOne({ bookFormId: bookFormId });
+    res.send(bookForm);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
+const customBookingForm = async (req, res) => {
+  try {
+    console.log('custom booking form data', req.body);
+    const {
+      bookFormId,
+      welcomeTitle,
+      welcomeMessage,
+      thankyouTitle,
+      thankyouMessage
+    } = req.body;
+    await BookForm.findOneAndUpdate(
+      { bookFormId: bookFormId },
+      { $set: {
+        'welcomeTitle': welcomeTitle,
+        'welcomeMessage': welcomeMessage,
+        'thankyouTitle': thankyouTitle,
+        'thankyouMessage': thankyouMessage
+      }}
+    );
+    res.send({message: 'Updated suceesfully'});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
+const customEmailNotification = async (req, res) => {
+  try {
+    console.log('custom booking email notification data', req.body);
+    const {
+      bookFormId,
+      approveTitle,
+      approveMessage,
+      approveMailStatus,
+      declineTitle,
+      declineMessage,
+      declineMailStatus
+    } = req.body;
+    await BookForm.findOneAndUpdate(
+      { bookFormId: bookFormId },
+      {
+        $set: {
+          'approveTitle': approveTitle,
+          'approveMessage': approveMessage,
+          'approveMailStatus': approveMailStatus,
+          'declineTitle': declineTitle,
+          'declineMessage': declineMessage,
+          'declineMailStatus': declineMailStatus
+        }
+      }
+    );
+    res.send({message: 'Updated suceesfully'});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
 module.exports = {
   createBooking,
   getBookingData,
@@ -168,4 +270,7 @@ module.exports = {
   approveBooking,
   declineBooking,
   deleteBookings,
+  getNotificaton,
+  customBookingForm,
+  customEmailNotification,
 }

@@ -4,7 +4,7 @@ import {
   APPROVED_BOOKING,
   DECLINED_BOOKING,
   DELETE_BOOKING_DATA,
-  GET_BOOKING_DATA, GET_BOOKING_DETAIL_DATA,
+  GET_BOOKING_DATA, GET_BOOKING_DETAIL_DATA, GET_EMAIL_NOTIFICATION,
 } from "../types";
 
 import axios from 'axios';
@@ -12,7 +12,15 @@ import axios from 'axios';
 export const createBooking = (data) => async (dispatch) => {
   console.log("formData", data);
   try {
-    const res = await axios.post('http://localhost:5000/api/booking/', data, { headers: { 'Content-Type': 'multipart/form-data', } });
+    const res = await axios.post(
+      'http://localhost:5000/api/booking/',
+      data,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
     console.log('register user ', res);
 
   } catch (err) {
@@ -24,14 +32,12 @@ export const createBooking = (data) => async (dispatch) => {
 }
 
 export const getBookingData = () => async (dispatch) => {
-
   try {
     const res = await api.get('/booking');
     dispatch({
       type: GET_BOOKING_DATA,
       payload: res.data
     })
-
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
@@ -59,7 +65,7 @@ export const getBookingDetail = (bookingId) => async (dispatch) => {
 
 export const approveBooking = (bookingId) => async (dispatch) => {
   try {
-    const res = await api.put(`/booking/detail/${bookingId}`, {status: 2});
+    const res = await api.put(`/booking/detail/${bookingId}`, { status: 2 });
     console.log('booking detail data here ', res.data);
     dispatch(setAlert(res.data.message, 'success'));
     dispatch({
@@ -77,7 +83,7 @@ export const approveBooking = (bookingId) => async (dispatch) => {
 
 export const declineBooking = (bookingId) => async (dispatch) => {
   try {
-    const res = await api.patch(`/booking/detail/${bookingId}`, {status: 1});
+    const res = await api.patch(`/booking/detail/${bookingId}`, { status: 1 });
     console.log('booking detail data here ', res.data);
     dispatch(setAlert(res.data.message, 'error'));
     dispatch({
@@ -104,6 +110,67 @@ export const deleteBookings = (data) => async (dispatch) => {
       payload: data.bookingIds
     })
 
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, 'error')));
+    }
+  }
+}
+
+export const getBookingFormData = (bookFormId) => async (dispatch) => {
+  try {
+    const res = await api.get(`/booking/custom-notification/${bookFormId}`);
+    console.log('res data ', res.data);
+    dispatch({
+      type: GET_EMAIL_NOTIFICATION,
+      payload: res.data
+    })
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, 'error')));
+    }
+  }
+}
+
+export const customBookingForm = (data) => async (dispatch) => {
+  try {
+    console.log('form data ', data.get('welcomeTitle'))
+    // const res = await api.post('/booking/custom-booking', data);
+    const res = await axios.post(
+      'http://localhost:5000/api/booking/custom-booking',
+      data,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'x-auth-token': localStorage.getItem('token')
+        }
+      }
+    );
+    console.log('update booking data ', res.data);
+    // dispatch({
+    //   type: GET_EMAIL_NOTIFICATION,
+    //   payload: res.data
+    // })
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, 'error')));
+    }
+  }
+}
+
+export const customEmailNotification = (data) => async (dispatch) => {
+  try {
+    const res = await api.post('/booking/custom-email-notification', data);
+    // const res = await api.post('/booking/custom-booking', data);
+    
+    console.log('update booking data ', res.data);
+    // dispatch({
+    //   type: GET_EMAIL_NOTIFICATION,
+    //   payload: res.data
+    // })
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {

@@ -9,6 +9,7 @@ import {
   DELETE_BOOKING_DATA,
   APPROVED_BOOKING,
   DECLINED_BOOKING,
+  GET_EMAIL_NOTIFICATION,
 } from "../types";
 
 const initialState = {
@@ -20,7 +21,8 @@ const initialState = {
   message: '',
   screenMethod: 0,
   bookingData: [],
-  bookingDetailData: {}
+  bookingDetailData: {},
+  emailNotification: {},
 }
 
 function bookReducer(state = initialState, action) {
@@ -74,6 +76,11 @@ function bookReducer(state = initialState, action) {
         ...state,
         bookingDetailData: { ...state.bookingDetailData, status: 1 }
       };
+    case GET_EMAIL_NOTIFICATION:
+      return {
+        ...state,
+        emailNotification: payload
+      }
     default:
       return state;
   }
