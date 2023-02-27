@@ -122,7 +122,7 @@ const approveBooking = async (req, res) => {
     if (approveMessage.includes('{client_phone}')) approveMessage = approveMessage.replace("{client_phone}", book.client.phone);
     if (approveMessage.includes('{booking_date}')) approveMessage = approveMessage.replace("{booking_date}", moment(book.date).format('DD/MM/YYYY'));
     if (approveMessage.includes('{booking_time}')) approveMessage = approveMessage.replace("{booking_time}", moment(book.date).format('LT'));
-    if (approveMessage.includes('{booking_duration}')) approveMessage = approveMessage.replace("{booking_time}", book.duration);
+    if (approveMessage.includes('{booking_duration}')) approveMessage = approveMessage.replace("{booking_duration}", book.duration);
 
     console.log('--- approve message ---\n ', approveTitle);
     sendApproveMail(book.client.email, approveTitle, approveMessage);
@@ -165,7 +165,7 @@ const declineBooking = async (req, res) => {
     if (declineMessage.includes('{client_phone}')) declineMessage = declineMessage.replace("{client_phone}", book.client.phone);
     if (declineMessage.includes('{booking_date}')) declineMessage = declineMessage.replace("{booking_date}", moment(book.date).format('DD/MM/YYYY'));
     if (declineMessage.includes('{booking_time}')) declineMessage = declineMessage.replace("{booking_time}", moment(book.date).format('LT'));
-    if (declineMessage.includes('{booking_duration}')) declineMessage = declineMessage.replace("{booking_time}", book.duration);
+    if (declineMessage.includes('{booking_duration}')) declineMessage = declineMessage.replace("{booking_duration}", book.duration);
 
     sendDeclineMail(book.client.email, declineTitle, declineMessage);
     res.send({ message: 'You declined for this booking.' });

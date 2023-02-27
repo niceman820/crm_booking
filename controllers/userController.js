@@ -109,6 +109,7 @@ const signUp = async (req, res) => {
 		let bookForm = new BookForm({
 			bookFormId: bookFormId,
 			approveMessage: `Dear {client_fname},\n\nThank you for your booking. Your appointment has been approved and confirmed!\n\nI look forward to seeing you on {booking_date} at {booking_time}.\n\nThank you and see you soon!\n\n${firstName}`,
+			// Dear ${client_fname}.<br/>Thank you for your booking. Your appointment has been approved and confirmed!<br/>I look forward to seeing you on ${booking_date} at ${booking_time}.<br/>Thank you and see you soon!<br/>${user.firstName}
 			declineMessage: `Thank you for your booking request. Unfortunately, I will not be able to accomodate you.`,
 			welcomeMessage: `I appreciate you connecting with me. To ensure your booking is accepted, please be sure to fill in this booking form in its entirety. - ${firstName}`,
 			thankyouMessage: `Thank you for your booking. I have received your request and will get back to you shortly!`,
