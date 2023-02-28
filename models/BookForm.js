@@ -44,7 +44,7 @@ const BookFormSchema = new Schema({
   },
   companyLogo: {
     type: String,
-    default: 'assets/images/user-logo.png'
+    default: 'uploads/user-logo.png'
   },
 }, {
   toObject: { virtuals: true },
