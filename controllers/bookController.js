@@ -1,16 +1,19 @@
 const Book = require('../models/Book');
 const User = require('../models/User');
 const BookForm = require('../models/BookForm');
+const Notification = require('../models/Notification');
 const {
   sendCreateMail,
   sendApproveMail,
   sendDeclineMail
 } = require('./mailerController');
 const moment = require('moment');
+const SocketServer = require('../socket')
 
 const createBooking = async (req, res) => {
   console.log('create booking ', req.body)
   const initialData = JSON.parse(req.body.initialData);
+  const client_device_info = JSON.parse(req.body.client_device_info);
   try {
     const {
       screenMethod,
@@ -23,9 +26,9 @@ const createBooking = async (req, res) => {
       date,
       duration,
       message,
-      bookFormId
+      bookFormId,
     } = initialData;
-
+    console.log('device ', client_device_info);
     const preferredCommuncation = {
       email: initialData.client.preferredCommuncation.email ? true : false,
       text: initialData.client.preferredCommuncation.text ? true : false,
@@ -43,7 +46,8 @@ const createBooking = async (req, res) => {
       ref2,
       bookFormId,
       idCard: req.file.path,
-      preferredCommuncation: preferredCommuncation
+      preferredCommuncation: preferredCommuncation,
+      client_device_info
     });
 
     const newbook = await book.save();
@@ -57,6 +61,15 @@ const createBooking = async (req, res) => {
       moment(newbook.date).format('DD/MM/YYYY'),
       moment(newbook.date).format('LT')
     );
+
+    let notification = new Notification({
+      bookingId: newbook._id,
+      userId: user._id
+    });
+
+    await notification.save();
+
+    SocketServer.getInstance().sendMailNotification(user._id);
 
   } catch (err) {
     console.error(err.message);
@@ -199,7 +212,7 @@ const deleteBookings = async (req, res) => {
 const getNotificaton = async (req, res) => {
   try {
     const {bookFormId} = req.params;
-    console.log('bookformId ', bookFormId);
+    // console.log('bookformId ', systemInfo, browserInfo);
     const bookForm = await BookForm.findOne({ bookFormId: bookFormId });
     res.send(bookForm);
   } catch (err) {

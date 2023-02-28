@@ -15,7 +15,6 @@ import {
 import { grey } from "@mui/material/colors";
 
 import SideBgImage from '../../assets/img/booking-side-bg-01.jpg';
-import UserLogo from '../../assets/img/user-logo.png';
 
 import BookingType from "./createBookingSubs/BookingType";
 import BasicInfo from "./createBookingSubs/BasicInfo";
@@ -63,18 +62,19 @@ const CreateBookingPage = () => {
   const dispatch = useDispatch();
   const { bookFormId } = useParams();
   const [activeStep, setActiveStep] = useState(0);
-  const [companyLogo, setCompanyLogo] = useState('');
+  // const [companyLogo, setCompanyLogo] = useState('');
+  
   // console.log('user logo ', UserLogo)
+
+  const emailNotification = useSelector(state => state.book.emailNotification);
+
+  // useEffect(() => {
+  //   if (emailNotification.companyLogo) setCompanyLogo(emailNotification.companyLogo);
+  // }, [emailNotification]);
 
   useEffect(() => {
     dispatch(getBookingFormData(bookFormId));
   }, []);
-
-  const emailNotification = useSelector(state => state.book.emailNotification);
-
-  useEffect(() => {
-    if (emailNotification.companyLogo) setCompanyLogo(emailNotification.companyLogo);
-  },[emailNotification]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const normalize = require('normalize-url');
 const { validationResult } = require('express-validator');
+const Notification = require('../models/Notification');
 
 const getUser = async (req, res) => {
 	try {
@@ -142,7 +143,8 @@ const getToken = async (req, res) => {
 	try {
 		console.log("user ", req.user);
 		const user = await User.findById(req.user.id).select('-password');
-		res.json(user);
+		const notification = await Notification.find({ userId: user._id, isRead: false }).populate('bookingId userId');
+		res.json({user, notification});
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).send('Server Error');
@@ -164,6 +166,23 @@ const getAllUsers = async (req, res) => {
 	}
 }
 
+const readNotification = async (req, res) => {
+	try {
+		const user = req.user;
+		await Notification.updateMany(
+			{ userId: user.id },
+			{ $set: {
+				isRead: true
+			}}
+		);
+
+		res.send({ msg: 'success'});
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).send('Server Error');
+	}
+}
+
 module.exports = {
 	getUser,
 	signIn,
@@ -171,4 +190,5 @@ module.exports = {
 	getToken,
 	sendResetLink,
 	getAllUsers,
+	readNotification
 };

@@ -71,6 +71,24 @@ const BookSchema = new Schema({
   isRemoved: {
     type: Boolean,
     default: false
+  },
+  client_device_info: {
+    systemInfo: {
+      type: String
+    },
+    browserInfo: {
+      type: String
+    },
+    countryInfo: {
+      type: String
+    },
+    ipInfo: {
+      type: String,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
   }
 }, {
   toObject: { virtuals: true },

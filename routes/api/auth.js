@@ -4,7 +4,8 @@ const auth = require('../../middleware/auth');
 const { check } = require('express-validator');
 const {
   getToken,
-  signIn
+  signIn,
+  readNotification
 } = require('../../controllers/userController');
 
 
@@ -24,5 +25,10 @@ router.post(
 );
 
 
+router.get(
+  '/read-notification',
+  auth,
+  readNotification
+)
 
 module.exports = router;

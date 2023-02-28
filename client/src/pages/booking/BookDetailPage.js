@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ScrollToTop from "react-scroll-to-top";
 import dayjs from "dayjs";
 import { useTheme } from '@mui/material/styles';
+import moment from "moment";
 import {
   Avatar,
   Button,
@@ -222,11 +223,11 @@ const BookDetailPage = () => {
                       <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.7rem', fontWeight: 600 }} >TIME</TableCell>
                     </TableRow>
                     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
-                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.7rem', fontWeight: 600, opacity: 0.8 }} >Australia</TableCell>
-                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.7rem', fontWeight: 600, opacity: 0.8 }} >Chrome-Windows</TableCell>
-                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.7rem', fontWeight: 600, opacity: 0.8 }} >207.18.15.370</TableCell>
-                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.7rem', fontWeight: 600, opacity: 0.8 }} >27 Apr 2022</TableCell>
-                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.7rem', fontWeight: 600, opacity: 0.8 }} >8:14PM</TableCell>
+                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.7rem', fontWeight: 600, opacity: 0.8 }} >{bookingDetailData?.client_device_info?.countryInfo}</TableCell>
+                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.7rem', fontWeight: 600, opacity: 0.8 }} >{bookingDetailData?.client_device_info?.browserInfo} - {bookingDetailData?.client_device_info?.systemInfo}</TableCell>
+                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.7rem', fontWeight: 600, opacity: 0.8 }} >{bookingDetailData?.client_device_info?.ipInfo}</TableCell>
+                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.7rem', fontWeight: 600, opacity: 0.8 }} >{moment(bookingDetailData?.client_device_info?.createdAt).format('ll')}</TableCell>
+                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.7rem', fontWeight: 600, opacity: 0.8 }} >{moment(bookingDetailData?.client_device_info?.createdAt).format('LT')}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>

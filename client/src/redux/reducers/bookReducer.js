@@ -31,6 +31,7 @@ function bookReducer(state = initialState, action) {
   switch (type) {
     case CREATE_BOOKING:
       return state;
+    
     case BOOKING_TYPE:
       return {
         ...state,

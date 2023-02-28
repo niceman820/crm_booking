@@ -121,6 +121,7 @@ export const deleteBookings = (data) => async (dispatch) => {
 export const getBookingFormData = (bookFormId) => async (dispatch) => {
   try {
     const res = await api.get(`/booking/custom-notification/${bookFormId}`);
+
     console.log('res data ', res.data);
     dispatch({
       type: GET_EMAIL_NOTIFICATION,
@@ -165,7 +166,7 @@ export const customEmailNotification = (data) => async (dispatch) => {
   try {
     const res = await api.post('/booking/custom-email-notification', data);
     // const res = await api.post('/booking/custom-booking', data);
-    
+
     console.log('update booking data ', res.data);
     // dispatch({
     //   type: GET_EMAIL_NOTIFICATION,

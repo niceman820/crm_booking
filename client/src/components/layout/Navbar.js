@@ -1,8 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { ColorModeContext } from '../../assets/theme/color-context';
 import makeStyles from "@material-ui/styles/makeStyles";
+import * as dayjs from 'dayjs';
+import moment from 'moment';
 import {
   AppBar,
   Box,
@@ -26,7 +28,8 @@ import {
   CardHeader,
   Divider,
   Switch,
-  FormControlLabel
+  FormControlLabel,
+  Stack
 } from '@mui/material';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -42,25 +45,28 @@ import MonitorIcon from '@mui/icons-material/Monitor';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import FlareIcon from '@mui/icons-material/Flare';
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+
+import patternImage from "../../assets/img/pattern-1.jpg";
 
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../redux/actions/auth';
+import { loadUser, logout, readNotification } from '../../redux/actions/auth';
 
 import {
   THEME_MENU,
   USER_PROFILE_MENU,
   USER_SUB_MENU,
   MY_BOOKING_MENU,
-  BOOKING_FORM
+  BOOKING_FORM,
+  NOTIFICATION_MENU
 } from '../../utils/constants';
+import { socketIo } from '../..';
 
 const useStyles = makeStyles({
   popOverRoot: {
     pointerEvents: "none"
   },
 });
-
-
 
 function Navbar() {
   const theme = useTheme();
@@ -75,9 +81,11 @@ function Navbar() {
   const [anchorThemeMenu, setAnchorThemeMenu] = useState(null);
   const [subpageItems, setSubpageItems] = useState([]);
   const [subpageTypeMenu, setSubpageTypeMenu] = useState();
+  const [anchorNotification, setAnchorNotification] = useState(null);
 
-  const { user } = useSelector(state => ({
-    user: state.auth.user
+  const { user, notification } = useSelector(state => ({
+    user: state.auth.user,
+    notification: state.auth.notification
   }));
 
   const pagesList = [
@@ -104,7 +112,7 @@ function Navbar() {
       typeMenu: BOOKING_FORM
     },
   ];
-  
+
   const subscriptionPages = [
     { title: 'Referrals', href: '' },
     { title: 'Billing', href: '' },
@@ -145,7 +153,9 @@ function Navbar() {
         case BOOKING_FORM:
           setAnchorDropdownMenu(event.currentTarget);
           break;
-
+        case NOTIFICATION_MENU:
+          setAnchorNotification(event.currentTarget);
+          break;
         default:
           break;
       }
@@ -173,7 +183,9 @@ function Navbar() {
       case BOOKING_FORM:
         setAnchorDropdownMenu(null);
         break;
-
+      case NOTIFICATION_MENU:
+        setAnchorNotification(null);
+        dispatch(readNotification());
       default:
         break;
     }
@@ -192,6 +204,18 @@ function Navbar() {
     dispatch(logout());
     navigate('/');
   }
+
+  useEffect(() => {
+    socketIo.on('SET_SOCKET_REQUEST', () => {
+      socketIo.emit('SET_SOCKET_ID', { user_id: user?.id || "" })
+    })
+    socketIo.on('MAIL_RECEIVED_NOTIFICATION', () => {
+      console.log('notified -------- 11111111111111111111111111');
+      // api request
+      dispatch(loadUser());
+
+    })
+  }, [])
 
   return (
     <AppBar position="static" sx={{ borderBottom: { md: '1px solid rgba(255, 255, 255, 0.1)', sm: 'none' } }} style={{ background: 'transparent', boxShadow: 'none' }}>
@@ -342,16 +366,82 @@ function Navbar() {
               size="large"
               aria-label="show 4 new mails"
               color="inherit"
+              onClick={(e) => handleClick(e, NOTIFICATION_MENU)}
               sx={{
                 '&:hover': {
                   backgroundColor: 'rgba(255, 255, 255, 0.1)'
                 }
               }}
             >
-              <Badge badgeContent={4} color="primary">
+              <Badge
+                badgeContent={notification?.length}
+                sx={{
+                  "& .MuiBadge-badge": {
+                    color: "#fff",
+                    backgroundColor: "#009EF7"
+                  }
+                }}>
                 <MailIcon sx={{ color: '#fff' }} />
               </Badge>
             </IconButton>
+            {/* notification dropdown */}
+            <Menu
+              sx={{ mt: '40px' }}
+              anchorEl={anchorNotification}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorNotification)}
+              onClose={handleClose(NOTIFICATION_MENU)}
+              PaperProps={{
+                sx: {
+                  width: '375px',
+                  ".MuiList-root": { padding: '0!important' }
+                },
+              }}
+            >
+              <MenuItem
+                sx={{
+                  py: 2.5,
+                  backgroundImage: `url(${patternImage})`,
+                  backgroundRepeat: 'no-repeat'
+                }}
+              >
+                <Typography textAlign="center" sx={{ color: theme.palette.mode === 'light' && 'white', fontSize: '1.2rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2 }}>Notification</Typography>
+              </MenuItem>
+              {notification.length > 0
+                ? notification.map((note, index) =>
+                  <MenuItem
+                    key={index}
+                    sx={{ py: 1.5 }}
+                  >
+                    <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ width: '100%' }} >
+                      <CardHeader
+                        avatar={
+                          <CalendarMonthIcon sx={{ fontSize: '1rem', color: '#009EF7' }} />
+                        }
+                        title={`New Booking (${note?.bookingId?.fullName})`}
+                        subheader={`${dayjs(note?.createdAt).format('ll')} at ${dayjs(note?.createdAt).format('LT')}`}
+                        sx={{ padding: 0, color: '#212121', backgroundColor: theme.palette.mode === 'dark' && '#1e1e2d' }}
+                      />
+                      <Typography sx={{ color: theme.palette.mode === 'light' && 'black', fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2 }}>{moment(note?.createdAt).fromNow()}</Typography>
+                    </Stack>
+                  </MenuItem>
+                )
+                : <MenuItem
+                  sx={{ py: 1.5 }}
+                >
+                  <Typography textAlign="center" sx={{ color: theme.palette.mode === 'light' && 'black', fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2 }}>Not Found</Typography>
+                </MenuItem>
+              }
+            </Menu>
+
             <IconButton
               size="large"
               color="inherit"

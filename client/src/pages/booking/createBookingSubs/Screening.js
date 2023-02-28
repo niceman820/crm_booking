@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useTheme } from '@mui/material/styles';
+import axios from "axios";
 import {
   Grid,
   Typography,
@@ -54,6 +55,8 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [valueScreenMethod, setValueScreenMethod] = useState('first');
   const [uploadFile, setUploadFile] = useState();
+  const [countryInfo, setCountryInfo] = useState('');
+  const [ipInfo, setIpInfo] = useState('');
 
   const { bookingData } = useSelector(state => ({
     bookingData: {
@@ -67,6 +70,14 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
     }
   }));
 
+  useEffect(() => {
+    axios.get('https://geolocation-db.com/json/')
+      .then(res => {
+        setCountryInfo(res.data.country_name);
+        setIpInfo(res.data.IPv4);
+      })
+  }, []);
+
   // console.log('booking data ', bookingData)
 
   const defaultValues = {
@@ -74,6 +85,48 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
     ref2: '',
     idCard: []
   }
+
+  const getSystemPlatformInfo = () => {
+    var OSName = "Unknown";
+    if (window.navigator.userAgent.indexOf("Windows NT 10.0") != -1) OSName = "Windows 10";
+    if (window.navigator.userAgent.indexOf("Windows NT 6.3") != -1) OSName = "Windows 8.1";
+    if (window.navigator.userAgent.indexOf("Windows NT 6.2") != -1) OSName = "Windows 8";
+    if (window.navigator.userAgent.indexOf("Windows NT 6.1") != -1) OSName = "Windows 7";
+    if (window.navigator.userAgent.indexOf("Windows NT 6.0") != -1) OSName = "Windows Vista";
+    if (window.navigator.userAgent.indexOf("Windows NT 5.1") != -1) OSName = "Windows XP";
+    if (window.navigator.userAgent.indexOf("Windows NT 5.0") != -1) OSName = "Windows 2000";
+    if (window.navigator.userAgent.indexOf("Mac") != -1) OSName = "Mac/iOS";
+    if (window.navigator.userAgent.indexOf("X11") != -1) OSName = "UNIX";
+    if (window.navigator.userAgent.indexOf("Linux") != -1) OSName = "Linux";
+    return OSName;
+  }
+
+  const getBrowserInfo = () => {
+    var ua = window.navigator.userAgent;
+    var tem;
+    var M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+    if (/trident/i.test(M[1])) {
+      tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+      return 'IE ' + (tem[1] || '');
+    }
+    if (M[1] === 'Chrome') {
+      tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
+      if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+    }
+    M = M[2] ? [M[1], M[2]] : [window.navigator.appName, window.navigator.appVersion, '-?'];
+    if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
+    return M.join(' ');
+  }
+  // const aa = getSystemPlatformInfo();
+  const systemInfo = getSystemPlatformInfo();
+  const browserInfo = getBrowserInfo();
+  // console.log('syste ', aa);
+  let client_info = {
+    systemInfo,
+    browserInfo,
+    countryInfo,
+    ipInfo
+  };
 
   const methods = useForm({
     resolver: zodResolver(screenSchema),
@@ -123,6 +176,7 @@ const Screening = ({ activeStep, onhandleNext, onhandleBack, length }) => {
     formData.append('ref1', data.ref1);
     formData.append('ref2', data.ref2);
     formData.append('initialData', JSON.stringify(bookingData));
+    formData.append('client_device_info', JSON.stringify(client_info));
     dispatch(createBooking(formData));
     onhandleNext();
   };

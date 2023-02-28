@@ -16,7 +16,8 @@ const initialState = {
   isAdmin: null,
   loading: true,
   user: null,
-  users: []
+  users: [],
+  notification: [],
 };
 
 function authReducer(state = initialState, action) {
@@ -28,7 +29,8 @@ function authReducer(state = initialState, action) {
         ...state,
         isAuthenticated: true,
         loading: false,
-        user: payload
+        user: payload.user,
+        notification: payload.notification
       };
     case USER_ADMIN:
       return {

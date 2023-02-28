@@ -10,6 +10,7 @@ import {
   LOGOUT,
 } from '../types';
 import setAuthToken from '../../utils/setAuthToken';
+import { socketIo } from '../..';
 
 // Load User
 export const loadUser = () => async (dispatch) => {
@@ -25,7 +26,8 @@ export const loadUser = () => async (dispatch) => {
       type: USER_LOADED,
       payload: res.data
     });
-    // }
+    
+    socketIo.emit('SET_SOCKET_ID', { user_id: res.data?.user?.id || "" })
   } catch (err) {
     dispatch({
       type: AUTH_ERROR
@@ -86,3 +88,16 @@ export const logout = () => (dispatch) => {
     type: LOGOUT
   });
 };
+
+export const readNotification = () => async (dispatch) => {
+  try {
+    const res = await api.get('/auth/read-notification');
+    console.log('res data ', res.data);
+    await dispatch(loadUser());
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, 'error')));
+    }
+  }
+}

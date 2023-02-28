@@ -381,7 +381,7 @@ const BookTable = () => {
                             </Avatar>
                           }
                           title={row.fullName}
-                          subheader={'test@email.com'}
+                          subheader={row.client.email}
                           sx={{ padding: 0, color: '#212121' }}
                         />
                       </TableCell>
