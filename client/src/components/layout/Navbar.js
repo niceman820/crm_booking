@@ -61,6 +61,7 @@ import {
   NOTIFICATION_MENU
 } from '../../utils/constants';
 import { socketIo } from '../..';
+import { getBookingData } from '../../redux/actions/book';
 
 const useStyles = makeStyles({
   popOverRoot: {
@@ -213,7 +214,7 @@ function Navbar() {
       console.log('notified -------- 11111111111111111111111111');
       // api request
       dispatch(loadUser());
-
+      dispatch(getBookingData());
     })
   }, [])
 
