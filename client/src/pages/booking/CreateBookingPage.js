@@ -62,7 +62,7 @@ const CreateBookingPage = () => {
   const dispatch = useDispatch();
   const { bookFormId } = useParams();
   const [activeStep, setActiveStep] = useState(0);
-  // const [companyLogo, setCompanyLogo] = useState('');
+  const [companyLogo, setCompanyLogo] = useState('');
   
   // console.log('user logo ', UserLogo)
 
@@ -75,6 +75,12 @@ const CreateBookingPage = () => {
   useEffect(() => {
     dispatch(getBookingFormData(bookFormId));
   }, []);
+
+  useEffect(() => {
+    if (emailNotification.companyLogo) {
+      setCompanyLogo(`http://localhost:5000/${emailNotification?.companyLogo}`);
+    }
+  }, [emailNotification]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -117,7 +123,7 @@ const CreateBookingPage = () => {
         >
           <Grid className="user-logo-title" display='flex' justifyContent='center' sx={{ mt: { md: 12, sm: 6 } }} >
             <Link to='/bookings'>
-              <img alt="Logo" src={`http://localhost:5000/${emailNotification?.companyLogo}`} height="90" />
+              <img alt="Logo" src={companyLogo} height="90" />
             </Link>
           </Grid>
           <Breadcrumbs aria-label="breadcrumb" separator="●" sx={{ mt: 5, color: grey[500], '&:hover': { cursor: 'pointer' } }} >
