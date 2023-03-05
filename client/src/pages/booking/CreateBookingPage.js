@@ -78,7 +78,7 @@ const CreateBookingPage = () => {
 
   useEffect(() => {
     if (emailNotification.companyLogo) {
-      setCompanyLogo(`http://localhost:5000/${emailNotification?.companyLogo}`);
+      setCompanyLogo(`http://18.117.206.87:5000/${emailNotification?.companyLogo}`);
     }
   }, [emailNotification]);
 

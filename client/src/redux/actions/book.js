@@ -13,7 +13,7 @@ export const createBooking = (data) => async (dispatch) => {
   console.log("formData", data);
   try {
     const res = await axios.post(
-      'http://localhost:5000/api/booking/',
+      'http://18.117.206.87:5000/api/booking/',
       data,
       {
         headers: {
@@ -140,7 +140,7 @@ export const customBookingForm = (data) => async (dispatch) => {
     console.log('form data ', data.get('welcomeTitle'))
     // const res = await api.post('/booking/custom-booking', data);
     const res = await axios.post(
-      'http://localhost:5000/api/booking/custom-booking',
+      'http://18.117.206.87:5000/api/booking/custom-booking',
       data,
       {
         headers: {

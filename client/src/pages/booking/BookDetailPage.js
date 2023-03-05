@@ -202,7 +202,7 @@ const BookDetailPage = () => {
                     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                       <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, verticalAlign: 'top' }} >ID Upload</TableCell>
                       <TableCell align="left" sx={{ paddingX: 0 }} >
-                        <img src={`http://localhost:5000/${bookingDetailData.idCard}`} style={{ width: '300px' }} />
+                        <img src={`http://18.117.206.87:5000/${bookingDetailData.idCard}`} style={{ width: '300px' }} />
                       </TableCell>
                     </TableRow>
                   </TableBody>

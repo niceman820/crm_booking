@@ -1,7 +1,7 @@
 {
-  "name": "devconnector",
+  "name": "Clientl",
   "version": "1.0.0",
-  "description": "Social network for developers",
+  "description": "Custom booking system for users and clients",
   "main": "server.js",
   "scripts": {
     "start": "node server",
@@ -10,7 +10,7 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
-  "author": "Brad Traversy",
+  "author": "Sasa",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.21.0",
