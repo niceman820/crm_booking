@@ -24,6 +24,7 @@ import Complete from "./createBookingSubs/Complete";
 import { useDispatch, useSelector } from "react-redux";
 import { getBookingFormData } from "../../redux/actions/book";
 import { useState } from "react";
+import config from "../../config/config";
 
 const steps = [
   {
@@ -78,7 +79,7 @@ const CreateBookingPage = () => {
 
   useEffect(() => {
     if (emailNotification.companyLogo) {
-      setCompanyLogo(`http://18.117.206.87:5000/${emailNotification?.companyLogo}`);
+      setCompanyLogo(`${config.SERVER_BASE_URL}/${emailNotification?.companyLogo}`);
     }
   }, [emailNotification]);
 

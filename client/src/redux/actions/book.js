@@ -8,12 +8,13 @@ import {
 } from "../types";
 
 import axios from 'axios';
+import config from "../../config/config";
 // create booking
 export const createBooking = (data) => async (dispatch) => {
   console.log("formData", data);
   try {
     const res = await axios.post(
-      'http://18.117.206.87:5000/api/booking/',
+      `${config.BASE_URL}/booking/`,
       data,
       {
         headers: {
@@ -140,7 +141,7 @@ export const customBookingForm = (data) => async (dispatch) => {
     console.log('form data ', data.get('welcomeTitle'))
     // const res = await api.post('/booking/custom-booking', data);
     const res = await axios.post(
-      'http://18.117.206.87:5000/api/booking/custom-booking',
+      `${config.BASE_URL}/booking/custom-booking`,
       data,
       {
         headers: {

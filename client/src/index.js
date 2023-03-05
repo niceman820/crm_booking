@@ -4,8 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import io from "socket.io-client";
+import config from './config/config';
 
-export const socketIo = io.connect('http://18.117.206.87:5000', { transports: ['polling'] });
+export const socketIo = io.connect(config.SERVER_BASE_URL, { transports: ['polling'] });
 
 ReactDOM.render(
   <React.StrictMode>
