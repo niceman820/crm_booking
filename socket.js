@@ -1,5 +1,6 @@
 const { Server } = require("socket.io");
 const { v4 } = require("uuid");
+const config = require("./config/config");
 var uuid = v4;
 
 class SocketServer {
@@ -22,7 +23,8 @@ class SocketServer {
   createSocketServer(server) {
     this.io = new Server(server, {
       cors: {
-        origin: "http://localhost:3000",
+        // origin: "http://localhost:3000",
+        origin: "*",
       },
     });
     this.userlist = [];

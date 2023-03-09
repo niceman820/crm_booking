@@ -95,8 +95,14 @@ const BookSchema = new Schema({
   toJSON: { virtuals: true }
 });
 
-BookSchema.virtual('fullName').get(function() {
+BookSchema.virtual('fullName').get(function () {
   return this.client.firstName + ' ' + this.client.lastName;
+});
+
+BookSchema.index({
+  // 'client.firstName': 'text',
+  // ref1: 'text'
+  duration: 'number'
 });
 
 module.exports = mongoose.model('books', BookSchema);

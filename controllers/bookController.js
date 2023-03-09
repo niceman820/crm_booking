@@ -105,7 +105,6 @@ const getBookingDetailData = async (req, res) => {
 const approveBooking = async (req, res) => {
   try {
     const bookingId = req.params.bookingId;
-    const user = await User.findById(req.user.id);
     const book = await Book.findByIdAndUpdate(
       bookingId,
       { status: 2 }
@@ -118,7 +117,6 @@ const approveBooking = async (req, res) => {
       approveMessage
     } = bookForm;
     
-    // console.log('updated book ', approveMailStatus, approveTitle, approveMessage);
     if (!approveMailStatus) return res.send({ message: 'You approved for this booking.' });
 
     if (approveTitle.includes('{client_fname}')) approveTitle = approveTitle.replace("{client_fname}", book.client.firstName);
@@ -283,6 +281,29 @@ const customEmailNotification = async (req, res) => {
   }
 }
 
+const searchBooking = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const bookFormId = user.bookFormId;
+    let { keyword } = req.body;
+    const bookingData = await Book.find({
+      bookFormId: bookFormId, 
+      isRemoved: false,
+      $or: [
+        {'client.firstName': { $regex: keyword, $options: 'i' }},
+        {'client.lastName': { $regex: keyword, $options: 'i' }},
+        {'client.occupation': { $regex: keyword, $options: 'i' }},
+        {'client.searchEngine': { $regex: keyword, $options: 'i' }},
+        {'client.email': { $regex: keyword, $options: 'i' }},
+      ]
+    });
+    res.json(bookingData);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+}
+
 module.exports = {
   createBooking,
   getBookingData,
@@ -293,4 +314,5 @@ module.exports = {
   getNotificaton,
   customBookingForm,
   customEmailNotification,
+  searchBooking,
 }

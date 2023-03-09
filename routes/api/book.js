@@ -10,7 +10,8 @@ const {
   deleteBookings,
   getNotificaton,
   customBookingForm,
-  customEmailNotification
+  customEmailNotification,
+  searchBooking
 } = require('../../controllers/bookController');
 const multer  = require('multer');
 const auth = require('../../middleware/auth');
@@ -88,5 +89,10 @@ router.post(
 // @desc     Update booking form email notification
 // @access   Private
 router.post('/custom-email-notification', auth, customEmailNotification);
+
+// @route    POST api/booking/search-booking
+// @desc     find booking with keyword
+// @access   Private
+router.post('/search-booking', auth, searchBooking);
 
 module.exports = router;

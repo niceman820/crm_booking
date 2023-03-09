@@ -33,7 +33,6 @@ import {
 } from '@mui/material';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import MailIcon from '@mui/icons-material/Mail';
@@ -84,9 +83,10 @@ function Navbar() {
   const [subpageTypeMenu, setSubpageTypeMenu] = useState();
   const [anchorNotification, setAnchorNotification] = useState(null);
 
-  const { user, notification } = useSelector(state => ({
+  const { user, notification, unreadNum } = useSelector(state => ({
     user: state.auth.user,
-    notification: state.auth.notification
+    notification: state.auth.notification,
+    unreadNum: state.auth.unreadNum,
   }));
 
   const pagesList = [
@@ -198,7 +198,7 @@ function Navbar() {
       if (!currentlyHovering) {
         handleClose(typeMenu)();
       }
-    }, 1);
+    }, 50);
   }
 
   const handleLogout = () => {
@@ -305,7 +305,7 @@ function Navbar() {
                     }
                   }}
                   onClick={(e) => handleClick(e, page.typeMenu, page.subpages)}
-                  onMouseOver={(e) => handleClick(e, page.typeMenu, page.subpages)}
+                  onMouseOver={(e) => {handleClick(e, page.typeMenu, page.subpages);  handleHover();}}
                   onMouseLeave={handleCloseHover(page.typeMenu)}
                 >
                   {page.page.title}
@@ -375,7 +375,7 @@ function Navbar() {
               }}
             >
               <Badge
-                badgeContent={notification?.length}
+                badgeContent={unreadNum}
                 sx={{
                   "& .MuiBadge-badge": {
                     color: "#fff",
@@ -416,8 +416,8 @@ function Navbar() {
               >
                 <Typography textAlign="center" sx={{ color: theme.palette.mode === 'light' && 'white', fontSize: '1.2rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2 }}>Notification</Typography>
               </MenuItem>
-              {notification.length > 0
-                ? notification.map((note, index) =>
+              {notification?.length > 0
+                ? notification?.map((note, index) =>
                   <MenuItem
                     key={index}
                     sx={{ py: 1.5 }}
@@ -429,7 +429,8 @@ function Navbar() {
                         }
                         title={`New Booking (${note?.bookingId?.fullName})`}
                         subheader={`${dayjs(note?.createdAt).format('ll')} at ${dayjs(note?.createdAt).format('LT')}`}
-                        sx={{ padding: 0, color: '#212121', backgroundColor: theme.palette.mode === 'dark' && '#1e1e2d' }}
+                        subheaderTypographyProps={{ color: note?.isRead ?? '#ccc' }}
+                        sx={{ padding: 0, color: note?.isRead ? '#ccc' : '#212121', backgroundColor: theme.palette.mode === 'dark' && '#1e1e2d' }}
                       />
                       <Typography sx={{ color: theme.palette.mode === 'light' && 'black', fontSize: '0.8rem', fontWeight: 600, opacity: 0.8, marginInlineStart: 2 }}>{moment(note?.createdAt).fromNow()}</Typography>
                     </Stack>
@@ -578,7 +579,7 @@ function Navbar() {
               </MenuItem>
               <MenuItem
                 sx={{ py: 1.5, marginInlineStart: 1 }}
-                onClick={(e) => handleClick(e, USER_SUB_MENU)}
+                // onClick={(e) => handleClick(e, USER_SUB_MENU)}
                 onMouseOver={(e) => handleClick(e, USER_SUB_MENU)}
                 onMouseLeave={handleCloseHover(USER_SUB_MENU)}
               >

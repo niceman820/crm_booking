@@ -60,9 +60,10 @@ export const signup = (data) => async (dispatch) => {
 
 // Login User
 export const login = (data) => async (dispatch) => {
-
+  console.log('data ', data);
   try {
     const res = await api.post('/auth', data);
+    console.log('res token', res.data);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data

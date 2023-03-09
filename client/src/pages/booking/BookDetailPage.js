@@ -19,8 +19,6 @@ import {
   Modal,
   Box,
 } from "@mui/material";
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import idSample from '../../assets/img/sample-id.jpg';
 import {
@@ -29,27 +27,18 @@ import {
   declineBooking
 } from "../../redux/actions/book";
 import config from "../../config/config";
+import "./style.css";
 
 const BookDetailPage = () => {
   const { bookId } = useParams();
   const dispatch = useDispatch();
-  console.log('book id ', bookId);
   const [open, setOpen] = useState(false);
   const [openDecline, setOpenDecline] = useState(false);
-  const [bookingStatus, setBookingStatus] = useState({ color: '#ff9800', title: 'Unconfirmed Booking' });
   const theme = useTheme();
 
   const { bookingDetailData } = useSelector(state => ({
     bookingDetailData: state.book.bookingDetailData,
   }));
-
-  // if (bookingDetailData.status == 1) {
-  //   setBookingStatus({ color: 'tomato', title: 'Declined Booking' });
-  // } else if (bookingDetailData.status == 2) {
-  //   setBookingStatus({ color: '#50CD89', title: 'Approved Booking' });
-  // } else setBookingStatus({ color: '#ff9800', title: 'Unconfirmed Booking' });
-
-  console.log('aaa', bookingDetailData);
 
   useEffect(() => {
     dispatch(getBookingDetail(bookId));
@@ -81,12 +70,12 @@ const BookDetailPage = () => {
       >
         <Grid item xs={12} sm={6}>
           <Typography sx={{ color: '#fff', fontSize: '1.5rem', fontWeight: 600 }}>Booking Details</Typography>
-          <Typography sx={{ color: '#fff', fontSize: '0.8rem', fontWeight: 600, mt: 1, opacity: 0.7 }} >You have received an Outcall booking request with Emma Smith for 5 May 2022 at 9:23pm</Typography>
+          <Typography sx={{ color: '#fff', fontSize: '0.8rem', fontWeight: 600, mt: 1, opacity: 0.7 }} >You have received an {bookingDetailData?.bookingType} booking request with {bookingDetailData?.fullName} for {dayjs(bookingDetailData?.date).format('DD MMM YYYY')} at {dayjs(bookingDetailData?.date).format('LT')}</Typography>
         </Grid>
-        <Grid item container direction='row' justifyContent='flex-end' alignItems="center" xs={12} sm={6}>
-          <Button color="success" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={() => setOpen(true)}>Approve Booking</Button>
+        {bookingDetailData?.status == 0 && <Grid item container direction='row' justifyContent='flex-end' alignItems="center" xs={12} sm={6}>
+          <Button color="success" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', color: '#fff' }} onClick={() => setOpen(true)}>Approve Booking</Button>
           <Button color="error" variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={() => setOpenDecline(true)} >Decline Booking</Button>
-        </Grid>
+        </Grid>}
       </Grid>
       <Grid
         item
@@ -112,12 +101,14 @@ const BookDetailPage = () => {
         >
           <Avatar sx={{ height: '3rem', width: '3rem', backgroundColor: 'tomato', height: '6rem', width: '6rem', fontSize: '3rem', fontWeight: 600, margin: 'auto', mt: 5 }}>{bookingDetailData?.client?.firstName[0]}</Avatar>
           <Typography sx={{ fontSize: '1.5rem', fontWeight: 600, textAlign: 'center', mt: 3 }}>{bookingDetailData?.fullName}</Typography>
-          {bookingDetailData?.status == 0
-            ? <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, textAlign: 'center', mt: 1, color: '#ff9800' }}>Unconfirmed Booking</Typography>
-            : bookingDetailData?.status ==1
-              ? <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, textAlign: 'center', mt: 1, color: 'tomato' }}>Declined Booking</Typography>
-              : <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, textAlign: 'center', mt: 1, color: '#50CD89' }}>Approved Booking</Typography>
-          }
+          <Grid sx={{ textAlign: 'center', marginTop: 1 }}>
+            {bookingDetailData?.status == 0
+              ? <Box className="booking-detail-type" sx={{ color: '#FFC700', backgroundColor: theme.palette.mode ==="light" ? "#FFF8DD" : "#392F28" }}>Unconfirmed Booking</Box>
+              : bookingDetailData?.status == 1
+                ? <Box className="booking-detail-type" sx={{ color: '#F1416C', backgroundColor: theme.palette.mode ==="light" ? "#FFF5F8" : "#3A2434" }}>Declined Booking</Box>
+                : <Box className="booking-detail-type" sx={{ color: '#50CD89', backgroundColor: theme.palette.mode === 'light' ? "#E8FFF3" : "#1C3238" }}>Approved Booking</Box>
+            }
+          </Grid>
           <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, mt: 5, marginInlineStart: 6 }}>Email</Typography>
           <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, mt: 0.5, marginInlineStart: 6, opacity: 0.8 }}>{bookingDetailData?.client?.email}</Typography>
           <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, mt: 3, marginInlineStart: 6 }}>Contact Number</Typography>
@@ -171,10 +162,6 @@ const BookDetailPage = () => {
                       <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600 }} >Duration</TableCell>
                       <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 }} >{bookingDetailData?.duration} {bookingDetailData?.duration == 1 ? 'Hour' : 'Hours'}</TableCell>
                     </TableRow>
-                    {/* <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
-                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600 }} >Location</TableCell>
-                      <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 }} >720 Collins St, Sydney</TableCell>
-                    </TableRow> */}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -203,7 +190,11 @@ const BookDetailPage = () => {
                     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                       <TableCell align="left" sx={{ paddingX: 0, fontSize: '0.8rem', fontWeight: 600, verticalAlign: 'top' }} >ID Upload</TableCell>
                       <TableCell align="left" sx={{ paddingX: 0 }} >
-                        <img src={`${config.SERVER_BASE_URL}/${bookingDetailData.idCard}`} style={{ width: '300px' }} />
+                        {
+                          bookingDetailData?.idCard
+                            ? <img src={`${config.SERVER_BASE_URL}/${bookingDetailData.idCard}`} style={{ width: '300px' }} />
+                            : <img src={idSample} style={{ width: '300px' }} />
+                        }
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -261,8 +252,10 @@ const BookDetailPage = () => {
             p: 4,
           }}
         >
-          <Grid sx={{ width: '80%', margin: 'auto' }}>
-            <HelpOutlineIcon color="primary" sx={{ fontSize: '7rem', margin: 'auto', display: 'flex' }} />
+          <Grid sx={{ width: '80%', margin: 'auto' }} className="text-center">
+            <Grid container justifyContent='center' alignItems='center' className="swal-question" sx={{ borderColor: "#009EF7", }} >
+              <Grid className="swal-icon-content" sx={{ fontSize: '3.25em', color: '#009EF7', }}>?</Grid>
+            </Grid>
             <Typography sx={{ fontSize: '1.2rem', textAlign: 'center', fontWeight: 600, mt: 3 }}>
               You are about to approve this booking.
             </Typography>
@@ -270,7 +263,7 @@ const BookDetailPage = () => {
               An email will be sent to the client to notify them. Do you wish to proceed?
             </Typography>
             <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
-              <Button color="success" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={handleApprove} >Confirm</Button>
+              <Button color="success" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', color: "#fff" }} onClick={handleApprove} >Confirm</Button>
               <Button color="error" variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={handleClose}>Cancel</Button>
             </Grid>
           </Grid>
@@ -295,8 +288,10 @@ const BookDetailPage = () => {
             p: 4,
           }}
         >
-          <Grid sx={{ width: '80%', margin: 'auto' }}>
-            <HighlightOffIcon color="error" sx={{ fontSize: '7rem', margin: 'auto', display: 'flex' }} />
+          <Grid sx={{ width: '80%', margin: 'auto' }} className="text-center">
+            <Grid container justifyContent='center' alignItems='center' className="swal-question swal-close" sx={{ borderColor: "#F1416C", }}>
+              <Grid className="swal-x-content" sx={{ fontSize: '2.75em', color: '#F1416C', }} >&#x2715;</Grid>
+            </Grid>
             <Typography sx={{ fontSize: '1.2rem', textAlign: 'center', fontWeight: 600, mt: 3 }}>
               You are about to decline this booking.
             </Typography>
@@ -304,7 +299,7 @@ const BookDetailPage = () => {
               An email will be sent to the client to notify them. Do you wish to proceed?
             </Typography>
             <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
-              <Button color="success" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={handleDecline} >Confirm</Button>
+              <Button color="success" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', color: '#fff' }} onClick={handleDecline} >Confirm</Button>
               <Button color="error" variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={handleClose}>Cancel</Button>
             </Grid>
           </Grid>

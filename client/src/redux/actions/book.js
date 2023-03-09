@@ -11,7 +11,6 @@ import axios from 'axios';
 import config from "../../config/config";
 // create booking
 export const createBooking = (data) => async (dispatch) => {
-  console.log("formData", data);
   try {
     const res = await axios.post(
       `${config.BASE_URL}/booking/`,
@@ -50,7 +49,6 @@ export const getBookingData = () => async (dispatch) => {
 export const getBookingDetail = (bookingId) => async (dispatch) => {
   try {
     const res = await api.get(`/booking/detail/${bookingId}`);
-    // console.log('booking detail data here ', res.data);
     dispatch({
       type: GET_BOOKING_DETAIL_DATA,
       payload: res.data
@@ -67,8 +65,6 @@ export const getBookingDetail = (bookingId) => async (dispatch) => {
 export const approveBooking = (bookingId) => async (dispatch) => {
   try {
     const res = await api.put(`/booking/detail/${bookingId}`, { status: 2 });
-    console.log('booking detail data here ', res.data);
-    dispatch(setAlert(res.data.message, 'success'));
     dispatch({
       type: APPROVED_BOOKING,
       payload: 2
@@ -85,8 +81,6 @@ export const approveBooking = (bookingId) => async (dispatch) => {
 export const declineBooking = (bookingId) => async (dispatch) => {
   try {
     const res = await api.patch(`/booking/detail/${bookingId}`, { status: 1 });
-    console.log('booking detail data here ', res.data);
-    dispatch(setAlert(res.data.message, 'error'));
     dispatch({
       type: DECLINED_BOOKING,
       payload: 1
@@ -103,9 +97,7 @@ export const declineBooking = (bookingId) => async (dispatch) => {
 export const deleteBookings = (data) => async (dispatch) => {
 
   try {
-    console.log('booking ids ', data)
     const res = await api.post('/booking/delete', data);
-    console.log('delete ', data.bookingIds);
     dispatch({
       type: DELETE_BOOKING_DATA,
       payload: data.bookingIds
@@ -122,8 +114,6 @@ export const deleteBookings = (data) => async (dispatch) => {
 export const getBookingFormData = (bookFormId) => async (dispatch) => {
   try {
     const res = await api.get(`/booking/custom-notification/${bookFormId}`);
-
-    console.log('res data ', res.data);
     dispatch({
       type: GET_EMAIL_NOTIFICATION,
       payload: res.data
@@ -138,8 +128,6 @@ export const getBookingFormData = (bookFormId) => async (dispatch) => {
 
 export const customBookingForm = (data) => async (dispatch) => {
   try {
-    console.log('form data ', data.get('welcomeTitle'))
-    // const res = await api.post('/booking/custom-booking', data);
     const res = await axios.post(
       `${config.BASE_URL}/booking/custom-booking`,
       data,
@@ -173,6 +161,21 @@ export const customEmailNotification = (data) => async (dispatch) => {
     //   type: GET_EMAIL_NOTIFICATION,
     //   payload: res.data
     // })
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, 'error')));
+    }
+  }
+}
+
+export const searchBooking = (data) => async (dispatch) => {
+  try {
+    const res = await api.post('/booking/search-booking', data);
+    dispatch({
+      type: GET_BOOKING_DATA,
+      payload: res.data
+    });
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {

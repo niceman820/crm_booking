@@ -314,8 +314,10 @@ const CustomizeFormPage = () => {
             p: 4,
           }}
         >
-          <Grid sx={{ width: '80%', margin: 'auto' }}>
-            <CheckCircleOutlineIcon color="primary" sx={{ fontSize: '7rem', margin: 'auto', display: 'flex' }} />
+          <Grid sx={{ width: '80%', margin: 'auto' }} className="text-center">
+            <Grid container justifyContent='center' alignItems='center' className="swal-question swal-close" sx={{ borderColor: "#50CD89", }}>
+              <Grid className="swal-x-content" sx={{ fontSize: '2.75em', color: '#50CD89', }} >&#10004;</Grid>
+            </Grid>
             <Typography sx={{ fontSize: '1.2rem', textAlign: 'center', fontWeight: 600, mt: 3 }}>
               Your settings have been saved.
             </Typography>
@@ -323,7 +325,7 @@ const CustomizeFormPage = () => {
               An email will be sent to the client to notify them. Do you wish to proceed?
             </Typography> */}
             <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
-              <Button color="success" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={handleClose} >Back to bookings</Button>
+              <Button color="success" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', color: '#fff' }} onClick={handleClose} >Back to bookings</Button>
             </Grid>
           </Grid>
         </Box>

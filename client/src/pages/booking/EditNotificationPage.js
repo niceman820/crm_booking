@@ -295,9 +295,9 @@ const EditNotificationPage = () => {
             {vairableList.map((variable, index) =>
               <CardHeader
                 key={index}
-                avatar={ variable.icon }
-                title={ variable.name }
-                subheader={ variable.description }
+                avatar={variable.icon}
+                title={variable.name}
+                subheader={variable.description}
                 titleTypographyProps={{ fontSize: '1rem', fontWeight: 600 }}
                 subheaderTypographyProps={{ fontWeight: 600, color: '#A1A5B7' }}
                 sx={{
@@ -334,8 +334,10 @@ const EditNotificationPage = () => {
             p: 4,
           }}
         >
-          <Grid sx={{ width: '80%', margin: 'auto' }}>
-            <CheckCircleOutlineIcon color="primary" sx={{ fontSize: '7rem', margin: 'auto', display: 'flex' }} />
+          <Grid sx={{ width: '80%', margin: 'auto' }} className="text-center">
+            <Grid container justifyContent='center' alignItems='center' className="swal-question swal-close" sx={{ borderColor: "#50CD89", }}>
+              <Grid className="swal-x-content" sx={{ fontSize: '2.75em', color: '#50CD89', }} >&#10004;</Grid>
+            </Grid>
             <Typography sx={{ fontSize: '1.2rem', textAlign: 'center', fontWeight: 600, mt: 3 }}>
               Your settings have been saved.
             </Typography>

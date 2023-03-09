@@ -143,8 +143,13 @@ const getToken = async (req, res) => {
 	try {
 		console.log("user ", req.user);
 		const user = await User.findById(req.user.id).select('-password');
-		const notification = await Notification.find({ userId: user._id, isRead: false }).populate('bookingId userId');
-		res.json({user, notification});
+		let notification = await Notification.find({ userId: user._id, isRead: false }).populate('bookingId userId');
+		const unreadNum = notification.length;
+		if (notification.length < 5) {
+			notification = await Notification.find({ userId: user._id }).populate('bookingId userId').sort('-createdAt').limit(5);			
+		}
+		console.log("notifi ", notification);
+		res.json({user, notification, unreadNum: unreadNum });
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).send('Server Error');

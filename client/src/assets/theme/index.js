@@ -16,6 +16,14 @@ const palette = {
       light: '#009EF7',
       // dark: '#00765A',
     },
+    success: {
+      main: '#50CD89',
+      light: '#50CD89',
+    },
+    error: {
+      main: '#F1416C',
+      light: '#F1416C',
+    }
   },
 };
 
@@ -30,6 +38,14 @@ export const getDesignTokens = (mode) => ({
           dark: palette.light.primary.dark,
         },
 
+        success: {
+          main: palette.light.success.main,
+        },
+
+        error: {
+          main: palette.light.error.main,
+        },
+
         divider: grey[300],
         text: {
           primary: grey[500],
@@ -40,6 +56,12 @@ export const getDesignTokens = (mode) => ({
         primary: {
           main: palette.light.primary.main,
           default: '#1e1e2d'
+        },
+        success: {
+          main: palette.light.success.main,
+        },
+        error: {
+          main: palette.light.error.main,
         },
         background: {
           default: '#1e1e2d',

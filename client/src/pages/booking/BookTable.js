@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import dayjs from "dayjs";
 import {
   Grid,
   Paper,
@@ -28,11 +29,9 @@ import { visuallyHidden } from '@mui/utils';
 
 import SearchIcon from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteBookings } from "../../redux/actions/book";
+import { deleteBookings, searchBooking } from "../../redux/actions/book";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -50,10 +49,6 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
@@ -171,10 +166,10 @@ EnhancedTableHead.propTypes = {
 };
 
 const BookTable = () => {
-  const {bookingData} = useSelector(state => ({
+  const { bookingData } = useSelector(state => ({
     bookingData: state.book.bookingData
   }));
-  console.log('booking data ', bookingData);
+  
   const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -186,8 +181,14 @@ const BookTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
- 
+  const [cancel, setCancel] = useState(false);
+
   const handleClose = () => setOpen(false);
+
+  const cancelDelete = () => {
+    setOpen(false);
+    setCancel(true);
+  }
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -253,10 +254,13 @@ const BookTable = () => {
   }
 
   const deleteBooking = () => {
-    setConfirm(true); 
+    setConfirm(true);
     setOpen(false);
-    // console.log('sss ', selected);
-    dispatch(deleteBookings({bookingIds: selected}));
+    dispatch(deleteBookings({ bookingIds: selected }));
+  }
+
+  const handleSearchBooking = (event) => {
+    dispatch(searchBooking({keyword: event.target.value}));
   }
 
   return (
@@ -292,6 +296,7 @@ const BookTable = () => {
           <InputBase
             placeholder="Search user"
             inputProps={{ sx: { fontSize: '0.8rem', fontWeight: 600, opacity: 0.8 } }}
+            onChange={handleSearchBooking}
             sx={{
               ml: 1,
               flex: 1,
@@ -327,7 +332,6 @@ const BookTable = () => {
       </Grid>
 
       <Paper sx={{ width: '95%', mb: 2, mt: 5, boxShadow: 'none' }}>
-        {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -386,16 +390,16 @@ const BookTable = () => {
                         />
                       </TableCell>
                       <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{row.client.occupation}</TableCell>
-                      <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{row.date}</TableCell>
+                      <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{dayjs(row.date).format('DD MMM YYYY')}, {dayjs(row.date).format('LT')}</TableCell>
                       <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{row.duration} {row.duration == 1 ? 'Hour' : 'Hours'}</TableCell>
-                      <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{row.source}</TableCell>
+                      <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>{row.client.searchEngine}</TableCell>
                       <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>
                         {
                           row.status === 0
-                            ? <Chip label="Unconfirmed" color="warning" variant="outlined" />
+                            ? <Box className="booking-detail-type" sx={{ color: '#FFC700', backgroundColor: theme.palette.mode ==="light" ? "#FFF8DD" : "#392F28" }}>Unconfirmed</Box>
                             : (row.status === 1
-                              ? <Chip label="Declined" color="error" variant="outlined" />
-                              : <Chip label="Approved" color="primary" variant="outlined" />)
+                              ? <Box className="booking-detail-type" sx={{ color: '#F1416C', backgroundColor: theme.palette.mode ==="light" ? "#FFF5F8" : "#3A2434" }}>Declined</Box>
+                              : <Box className="booking-detail-type" sx={{ color: '#50CD89', backgroundColor: theme.palette.mode === 'light' ? "#E8FFF3" : "#1C3238" }}>Approved</Box>)
                         }
                       </TableCell>
                       <TableCell align="left" sx={{ fontSize: '0.8rem', opacity: 0.8 }}>
@@ -465,14 +469,16 @@ const BookTable = () => {
             p: 4,
           }}
         >
-          <Grid sx={{ width: '80%', margin: 'auto' }}>
-            <ErrorOutlineIcon sx={{ fontSize: '7rem', margin: 'auto', display: 'flex', color: '#FFC700' }} />
+          <Grid sx={{ width: '80%', margin: 'auto' }} className="text-center">
+            <Grid container justifyContent='center' alignItems='center' className="swal-question swal-close" sx={{ borderColor: "#FFC700", }}>
+              <Grid className="swal-i-content" sx={{ fontSize: '2.75em', color: '#FFC700', }} >!</Grid>
+            </Grid>
             <Typography id="modal-modal-description" sx={{ mt: 2, textAlign: 'center' }}>
               Are you sure you want to delete selected customers?
             </Typography>
             <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
               <Button color="error" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={deleteBooking}>Yes, delete!</Button>
-              <Button color="success" variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={handleClose}>No, cancel</Button>
+              <Button color="success" variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', color: '#fff' }} onClick={cancelDelete}>No, cancel</Button>
             </Grid>
           </Grid>
         </Box>
@@ -497,8 +503,10 @@ const BookTable = () => {
             p: 4,
           }}
         >
-          <Grid sx={{ width: '80%', margin: 'auto' }}>
-            <CheckCircleOutlineIcon color="primary" sx={{ fontSize: '7rem', margin: 'auto', display: 'flex' }} />
+          <Grid sx={{ width: '80%', margin: 'auto' }} className="text-center">
+            <Grid container justifyContent='center' alignItems='center' className="swal-question swal-close" sx={{ borderColor: "#50CD89", }}>
+              <Grid className="swal-x-content" sx={{ fontSize: '2.75em', color: '#50CD89', }} >&#10004;</Grid>
+            </Grid>
             <Typography id="modal-modal-description" sx={{ mt: 2, textAlign: 'center' }}>
               You have deleted all selected customers!
             </Typography>
@@ -509,9 +517,9 @@ const BookTable = () => {
         </Box>
       </Modal>
 
-      {/* <Modal
-        open={open}
-        onClose={handleClose}
+      <Modal
+        open={cancel}
+        onClose={() => setCancel(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -528,19 +536,20 @@ const BookTable = () => {
             p: 4,
           }}
         >
-          <Grid sx={{ width: '80%', margin: 'auto' }}>
-            <ErrorOutlineIcon sx={{ fontSize: '7rem', margin: 'auto', display: 'flex', color: '#FFC700' }} />
+          <Grid sx={{ width: '80%', margin: 'auto' }} className="text-center">
+            <Grid container justifyContent='center' alignItems='center' className="swal-question swal-close" sx={{ borderColor: "#F1416C", }}>
+              <Grid className="swal-x-content" sx={{ fontSize: '2.75em', color: '#F1416C', }} >&#x2715;</Grid>
+            </Grid>
             <Typography id="modal-modal-description" sx={{ mt: 2, textAlign: 'center' }}>
-              Are you sure you want to delete selected customers?
+              Selected customers was not deleted.
             </Typography>
             <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
-              <Button color="error" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={() => { setConfirm(true); setOpen(false); }}>Yes, delete!</Button>
-              <Button color="success" variant="contained" sx={{ marginInlineStart: 3, fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={handleClose}>No, cancel</Button>
+              <Button color="primary" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', color: '#fff' }} onClick={() => setCancel(false)} >Ok, got it!</Button>
             </Grid>
           </Grid>
         </Box>
-      </Modal> */}
-      
+      </Modal>
+
     </Grid>
   );
 }

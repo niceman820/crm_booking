@@ -23,7 +23,7 @@ app.use(express.urlencoded({
     extended: true
 }))
 app.use('/uploads', express.static('uploads'));
-app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 // cors Middleware
 app.use(cors({

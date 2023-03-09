@@ -42,7 +42,7 @@ const Complete = ({ activeStep, onhandleBack }) => {
           </Grid>
         </Stack>
       </Container>
-      <Grid display='flex' justifyContent='space-between' sx={{ my: 2, width: { md: '600px' } }}>
+      {/* <Grid display='flex' justifyContent='space-between' sx={{ my: 2, width: { md: '600px' } }}>
         <Button
           variant="contained"
           disabled={activeStep === 0}
@@ -52,7 +52,7 @@ const Complete = ({ activeStep, onhandleBack }) => {
         >
           Back
         </Button>
-      </Grid>
+      </Grid> */}
     </Grid>
   )
 }
