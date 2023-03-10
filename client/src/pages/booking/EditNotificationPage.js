@@ -345,7 +345,7 @@ const EditNotificationPage = () => {
               An email will be sent to the client to notify them. Do you wish to proceed?
             </Typography> */}
             <Grid item container direction='row' justifyContent='center' alignItems='center' display="flex" sx={{ mt: 3 }}>
-              <Button color="success" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none' }} onClick={handleClose} >Back to bookings</Button>
+              <Button color="success" variant="contained" sx={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'none', color: '#fff' }} onClick={handleClose} >Back to bookings</Button>
             </Grid>
           </Grid>
         </Box>
