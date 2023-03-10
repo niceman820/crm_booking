@@ -11,9 +11,7 @@ const sendMail = (userEmail, userName, clientName, duration, date, time) => {
     service: 'gmail',
     port: 467,
     auth: {
-      // user: 'prodev004@gmail.com',
       user: 'nicemanwind820@gmail.com',
-      // pass: 'uaxxmaxqyqdttcsh'
       pass: 'eoavpwlhgaauwpnm'
     }
   });

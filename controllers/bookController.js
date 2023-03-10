@@ -109,7 +109,7 @@ const approveBooking = async (req, res) => {
       bookingId,
       { status: 2 }
     );
-        
+
     const bookForm = await BookForm.findOne({ bookFormId: book.bookFormId });
     let {
       approveMailStatus,
@@ -119,21 +119,21 @@ const approveBooking = async (req, res) => {
     
     if (!approveMailStatus) return res.send({ message: 'You approved for this booking.' });
 
-    if (approveTitle.includes('{client_fname}')) approveTitle = approveTitle.replace("{client_fname}", book.client.firstName);
-    if (approveTitle.includes('{client_lname}')) approveTitle = approveTitle.replace("{client_lname}", book.client.lastName);
-    if (approveTitle.includes('{client_email}')) approveTitle = approveTitle.replace("{client_email}", book.client.email);
-    if (approveTitle.includes('{client_phone}')) approveTitle = approveTitle.replace("{client_phone}", book.client.phone);
-    if (approveTitle.includes('{booking_date}')) approveTitle = approveTitle.replace("{booking_date}", moment(book.date).format('DD/MM/YYYY'));
-    if (approveTitle.includes('{booking_time}')) approveTitle = approveTitle.replace("{booking_time}", moment(book.date).format('LT'));
-    if (approveTitle.includes('{booking_duration}')) approveTitle = approveTitle.replace("{booking_time}", book.duration);
+    if (approveTitle.includes('{client_fname}')) approveTitle = approveTitle.replace(/{client_fname}/g, book.client.firstName);
+    if (approveTitle.includes('{client_lname}')) approveTitle = approveTitle.replace(/{client_lname}/g, book.client.lastName);
+    if (approveTitle.includes('{client_email}')) approveTitle = approveTitle.replace(/{client_email}/g, book.client.email);
+    if (approveTitle.includes('{client_phone}')) approveTitle = approveTitle.replace(/{client_phone}/g, book.client.phone);
+    if (approveTitle.includes('{booking_date}')) approveTitle = approveTitle.replace(/{booking_date}/g, moment(book.date).format('DD/MM/YYYY'));
+    if (approveTitle.includes('{booking_time}')) approveTitle = approveTitle.replace(/{booking_time}/g, moment(book.date).format('LT'));
+    if (approveTitle.includes('{booking_duration}')) approveTitle = approveTitle.replace(/{booking_time}/g, book.duration);
 
-    if (approveMessage.includes('{client_fname}')) approveMessage = approveMessage.replace("{client_fname}", book.client.firstName);
-    if (approveMessage.includes('{client_lname}')) approveMessage = approveMessage.replace("{client_lname}", book.client.lastName);
-    if (approveMessage.includes('{client_email}')) approveMessage = approveMessage.replace("{client_email}", book.client.email);
-    if (approveMessage.includes('{client_phone}')) approveMessage = approveMessage.replace("{client_phone}", book.client.phone);
-    if (approveMessage.includes('{booking_date}')) approveMessage = approveMessage.replace("{booking_date}", moment(book.date).format('DD/MM/YYYY'));
-    if (approveMessage.includes('{booking_time}')) approveMessage = approveMessage.replace("{booking_time}", moment(book.date).format('LT'));
-    if (approveMessage.includes('{booking_duration}')) approveMessage = approveMessage.replace("{booking_duration}", `${book.duration} hours`);
+    if (approveMessage.includes('{client_fname}')) approveMessage = approveMessage.replace(/{client_fname}/g, book.client.firstName);
+    if (approveMessage.includes('{client_lname}')) approveMessage = approveMessage.replace(/{client_lname}/g, book.client.lastName);
+    if (approveMessage.includes('{client_email}')) approveMessage = approveMessage.replace(/{client_email}/g, book.client.email);
+    if (approveMessage.includes('{client_phone}')) approveMessage = approveMessage.replace(/{client_phone}/g, book.client.phone);
+    if (approveMessage.includes('{booking_date}')) approveMessage = approveMessage.replace(/{booking_date}/g, moment(book.date).format('DD/MM/YYYY'));
+    if (approveMessage.includes('{booking_time}')) approveMessage = approveMessage.replace(/{booking_time}/g, moment(book.date).format('LT'));
+    if (approveMessage.includes('{booking_duration}')) approveMessage = approveMessage.replace(/{booking_duration}/g, `${book.duration} hours`);
 
     approveMessage = approveMessage.replace(/\n/g, "<br />");
 
@@ -164,21 +164,21 @@ const declineBooking = async (req, res) => {
     // console.log('updated book ', declineMailStatus, declineTitle, declineMessage);
     if (!declineMailStatus) return res.send({ message: 'You declined for this booking.' });
 
-    if (declineTitle.includes('{client_fname}')) declineTitle = declineTitle.replace("{client_fname}", book.client.firstName);
-    if (declineTitle.includes('{client_lname}')) declineTitle = declineTitle.replace("{client_lname}", book.client.lastName);
-    if (declineTitle.includes('{client_email}')) declineTitle = declineTitle.replace("{client_email}", book.client.email);
-    if (declineTitle.includes('{client_phone}')) declineTitle = declineTitle.replace("{client_phone}", book.client.phone);
-    if (declineTitle.includes('{booking_date}')) declineTitle = declineTitle.replace("{booking_date}", moment(book.date).format('DD/MM/YYYY'));
-    if (declineTitle.includes('{booking_time}')) declineTitle = declineTitle.replace("{booking_time}", moment(book.date).format('LT'));
-    if (declineTitle.includes('{booking_duration}')) declineTitle = declineTitle.replace("{booking_time}", book.duration);
+    if (declineTitle.includes('{client_fname}')) declineTitle = declineTitle.replace(/{client_fname}/g, book.client.firstName);
+    if (declineTitle.includes('{client_lname}')) declineTitle = declineTitle.replace(/{client_lname}/g, book.client.lastName);
+    if (declineTitle.includes('{client_email}')) declineTitle = declineTitle.replace(/{client_email}/g, book.client.email);
+    if (declineTitle.includes('{client_phone}')) declineTitle = declineTitle.replace(/{client_phone}/g, book.client.phone);
+    if (declineTitle.includes('{booking_date}')) declineTitle = declineTitle.replace(/{booking_date}/g, moment(book.date).format('DD/MM/YYYY'));
+    if (declineTitle.includes('{booking_time}')) declineTitle = declineTitle.replace(/{booking_time}/g, moment(book.date).format('LT'));
+    if (declineTitle.includes('{booking_duration}')) declineTitle = declineTitle.replace(/{booking_time}/g, book.duration);
 
-    if (declineMessage.includes('{client_fname}')) declineMessage = declineMessage.replace("{client_fname}", book.client.firstName);
-    if (declineMessage.includes('{client_lname}')) declineMessage = declineMessage.replace("{client_lname}", book.client.lastName);
-    if (declineMessage.includes('{client_email}')) declineMessage = declineMessage.replace("{client_email}", book.client.email);
-    if (declineMessage.includes('{client_phone}')) declineMessage = declineMessage.replace("{client_phone}", book.client.phone);
-    if (declineMessage.includes('{booking_date}')) declineMessage = declineMessage.replace("{booking_date}", moment(book.date).format('DD/MM/YYYY'));
-    if (declineMessage.includes('{booking_time}')) declineMessage = declineMessage.replace("{booking_time}", moment(book.date).format('LT'));
-    if (declineMessage.includes('{booking_duration}')) declineMessage = declineMessage.replace("{booking_duration}", `${book.duration} hours`);
+    if (declineMessage.includes('{client_fname}')) declineMessage = declineMessage.replace(/{client_fname}/g, book.client.firstName);
+    if (declineMessage.includes('{client_lname}')) declineMessage = declineMessage.replace(/{client_lname}/g, book.client.lastName);
+    if (declineMessage.includes('{client_email}')) declineMessage = declineMessage.replace(/{client_email}/g, book.client.email);
+    if (declineMessage.includes('{client_phone}')) declineMessage = declineMessage.replace(/{client_phone}/g, book.client.phone);
+    if (declineMessage.includes('{booking_date}')) declineMessage = declineMessage.replace(/{booking_date}/g, moment(book.date).format('DD/MM/YYYY'));
+    if (declineMessage.includes('{booking_time}')) declineMessage = declineMessage.replace(/{booking_time}/g, moment(book.date).format('LT'));
+    if (declineMessage.includes('{booking_duration}')) declineMessage = declineMessage.replace(/{booking_duration}/g, `${book.duration} hours`);
 
     declineMessage = declineMessage.replace(/\n/g, "<br />");
 
