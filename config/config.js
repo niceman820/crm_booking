@@ -3,6 +3,7 @@ const config = {
   jwtSecret: "crm_clientl",
   // clientURL: "http://18.117.206.87:3000",
   clientURL: "http://95.179.146.141:3000",
+  // clientURL: "http://localhost:3000",
 
   // subscriptionSecret: "subscription_encryption",
   // gmail_api_key: "ycqfofoxuqvtkhok",

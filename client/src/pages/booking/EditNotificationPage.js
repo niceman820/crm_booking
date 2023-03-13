@@ -25,7 +25,6 @@ import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import ShutterSpeedIcon from '@mui/icons-material/ShutterSpeed';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useDispatch, useSelector } from "react-redux";
 import { customEmailNotification, getBookingFormData } from "../../redux/actions/book";
 
@@ -49,11 +48,9 @@ const EditNotificationPage = () => {
     user: state.auth.user
   }));
 
-
   useEffect(() => {
     dispatch(getBookingFormData(user?.bookFormId));
   }, []);
-
 
   const [approvedTitle, setApprovedTitle] = useState("");
   const [approvedMessage, setApprovedMessage] = useState("");
@@ -61,7 +58,6 @@ const EditNotificationPage = () => {
   const [declinedMessage, setDeclinedMessage] = useState('');
   const [approvedStatus, setApprovedStatus] = useState(false);
   const [declinedStatus, setDeclinedStatus] = useState(false);
-
 
   useEffect(() => {
     if (emailNotification.approveTitle) {
@@ -96,8 +92,6 @@ const EditNotificationPage = () => {
   const handleChangeMessage = (e) => {
     setApprovedMessage(e.target.value)
   }
-
-
 
   return (
     <Container maxWidth="lg">

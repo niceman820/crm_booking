@@ -9,17 +9,26 @@ import {
   Button
 } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
+import { useSelector } from "react-redux";
+import config from "../../config/config";
 
 const EmbedPage = () => {
   const theme = useTheme();
-  const [valueLink, setValueLink] = useState("<a href='https://test.com/'>Launch My Booking Form</a>");
+  const [valueLink, setValueLink] = useState("");
   const [valueBtnCode, setValueBtnCode] = useState("<div id = 'mf_placeholder'\n\tdata-formurl='forms/embed.php?id=19108'\n\tdata-formheight='1746'\n\tdata-formtitle='Sample Booking Form'\n</div>\n<script>\n(function(f,o,r,m){\n\tr = f.createElement('script');r.async=1;r.src=o+'js/mf.js';\n\tm=f.getElementById('mf_placeholder'); m.parentNode.insertBefore(r, m);\n})(document,'/forms/');\n</script>\n");
   const [openLinkCopyTooltip, setOpenLinkCopyTooltip] = useState(false);
   const [openBtnCodeTooltip, setOpenBtnCodeTooltip] = useState(false);
-  const [errorLink, setErrorLink] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [errorButton, setErrorButton] = useState(false);
-  const [errorBtnMessage, setErrorBtnMessage] = useState('');
+
+  const { user } = useSelector(state => ({
+    user: state.auth.user,
+  }));
+
+  useEffect(() => {
+    if (user.firstName) {
+      setValueLink(`<a href='${config.CLIENT_BASE_URL}/new-booking/${user.bookFormId}/${user.firstName}-${user.lastName}'>Launch My Booking Form</a>`);
+      setValueBtnCode(`<button onclick="javascript:poponload()" style="padding: 10px 20px;">Launch Booking Form</button>\n<script type="text/javascript">\nfunction poponload()\n{\n\ttestwindow = window.open("${config.CLIENT_BASE_URL}/new-booking/${user.bookFormId}/${user.firstName}-${user.lastName}", "mywindow", "location=1, status=1, scrollbars=1, width=800, height=600");\n\ttestwindow.moveTo(0, 0);\n}\n</script>`);
+    }
+  }, [user]);
 
   const handleTooltipClose = () => {
     setOpenLinkCopyTooltip(false);
@@ -27,23 +36,13 @@ const EmbedPage = () => {
   };
 
   const handleCopyLink = () => {
-    if (valueLink === '') {
-      setErrorLink(true);
-      setErrorMessage('Link is required.');
-    } else {
-      navigator.clipboard.writeText(valueLink);
-      setOpenLinkCopyTooltip(true);
-    }
+    navigator.clipboard.writeText(valueLink);
+    setOpenLinkCopyTooltip(true);
   }
 
   const handleCopyButtonCode = () => {
-    if (valueBtnCode === '') {
-      setErrorButton(true);
-      setErrorBtnMessage('Button code is required.');
-    } else {
-      navigator.clipboard.writeText(valueBtnCode);
-      setOpenBtnCodeTooltip(true);
-    }
+    navigator.clipboard.writeText(valueBtnCode);
+    setOpenBtnCodeTooltip(true);
   }
 
   return (
@@ -65,9 +64,6 @@ const EmbedPage = () => {
                 variant="standard"
                 fullWidth
                 value={valueLink}
-                onChange={(e) => { setErrorLink(false); setErrorMessage(''); setValueLink(e.target.value); }}
-                error={errorLink}
-                helperText={errorMessage}
                 InputProps={{
                   disableUnderline: true,
                   style: {
@@ -121,9 +117,6 @@ const EmbedPage = () => {
               variant="standard"
               fullWidth
               value={valueBtnCode}
-              onChange={(e) => { setErrorButton(false); setErrorBtnMessage(''); setValueBtnCode(e.target.value); }}
-              error={errorButton}
-              helperText={errorBtnMessage}
               sx={{ mt: 1 }}
               multiline
               rows={8}
