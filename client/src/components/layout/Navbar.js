@@ -100,7 +100,7 @@ function Navbar() {
       subpages: [
         { title: 'View All Bookings', href: '/bookings', icon: <MailIcon /> },
         { title: 'Edit Notifications', href: '/bookings/edit-notifications', icon: <MailIcon /> },
-        { title: 'Preview Booking', href: `/new-booking/${user?.bookFormId}/${user?.firstName}-${user?.lastName}`, icon: <NoteAddIcon /> }
+        { title: 'Preview Booking', href: `/book/${user?.bookFormId}/${user?.firstName}-${user?.lastName}`, icon: <NoteAddIcon /> }
       ],
       typeMenu: MY_BOOKING_MENU
     },

@@ -15,7 +15,7 @@ import config from "../../config/config";
 const EmbedPage = () => {
   const theme = useTheme();
   const [valueLink, setValueLink] = useState("");
-  const [valueBtnCode, setValueBtnCode] = useState("<div id = 'mf_placeholder'\n\tdata-formurl='forms/embed.php?id=19108'\n\tdata-formheight='1746'\n\tdata-formtitle='Sample Booking Form'\n</div>\n<script>\n(function(f,o,r,m){\n\tr = f.createElement('script');r.async=1;r.src=o+'js/mf.js';\n\tm=f.getElementById('mf_placeholder'); m.parentNode.insertBefore(r, m);\n})(document,'/forms/');\n</script>\n");
+  const [valueBtnCode, setValueBtnCode] = useState("");
   const [openLinkCopyTooltip, setOpenLinkCopyTooltip] = useState(false);
   const [openBtnCodeTooltip, setOpenBtnCodeTooltip] = useState(false);
 
@@ -25,8 +25,8 @@ const EmbedPage = () => {
 
   useEffect(() => {
     if (user.firstName) {
-      setValueLink(`<a href='${config.CLIENT_BASE_URL}/new-booking/${user.bookFormId}/${user.firstName}-${user.lastName}'>Launch My Booking Form</a>`);
-      setValueBtnCode(`<button onclick="javascript:poponload()" style="padding: 10px 20px;">Launch Booking Form</button>\n<script type="text/javascript">\nfunction poponload()\n{\n\ttestwindow = window.open("${config.CLIENT_BASE_URL}/new-booking/${user.bookFormId}/${user.firstName}-${user.lastName}", "mywindow", "location=1, status=1, scrollbars=1, width=800, height=600");\n\ttestwindow.moveTo(0, 0);\n}\n</script>`);
+      setValueLink(`<a href='${config.CLIENT_BASE_URL}/book/${user.bookFormId}/${user.firstName}-${user.lastName}'>Launch My Booking Form</a>`);
+      setValueBtnCode(`<button onclick="javascript:poponload()" style="padding: 10px 20px;">Launch Booking Form</button>\n<script type="text/javascript">\nfunction poponload()\n{\n\ttestwindow = window.open("${config.CLIENT_BASE_URL}/book/${user.bookFormId}/${user.firstName}-${user.lastName}", "mywindow", "location=1, status=1, scrollbars=1, width=1400, height=880");\n\ttestwindow.moveTo(0, 0);\n}\n</script>`);
     }
   }, [user]);
 
